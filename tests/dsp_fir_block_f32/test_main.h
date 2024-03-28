@@ -12,7 +12,7 @@
 
 #define N_TAPS          256
 #define N_SAMPLES       64
-#define SNR_REF_THLD    75
+#define SNR_REF_THLD    50
 
 #define N_BLOCKS        (N_SAMPLES/BLOCK_SIZE)
 

@@ -1,7 +1,7 @@
 #include <stdint.h>
 
 // includes for every benchmark
-#include "support.h"
+// #include "support.h"
 
 // includes for this benchmark
 #include "test_main.h"
@@ -51,7 +51,7 @@ int __attribute__ ((used)) test_main (int argc __attribute__ ((unused)), char *a
     embench_fir_init_f32(&filter_S, N_TAPS, coeff, filter_state, BLOCK_SIZE);
 
     // begin profiling
-    start_trigger();
+    // start_trigger();
 
     // iterate over the blocks
     for (ptr = 0; ptr < N_BLOCKS; ptr++) {
@@ -59,7 +59,7 @@ int __attribute__ ((used)) test_main (int argc __attribute__ ((unused)), char *a
     }
 
     // end profiling
-    stop_trigger();
+    // stop_trigger();
 
 #ifdef CHECK_SNR
     // calculate SNR of test output vs matlab reference output

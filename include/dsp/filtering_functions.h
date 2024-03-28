@@ -1,6 +1,6 @@
 /******************************************************************************
  * @file     filtering_functions.h
- * @brief    Public header file for Cirrus DSP Library
+ * @brief    Public header file for Embench DSP Library
  ******************************************************************************/
 /*
  * Modified from Arm CMSIS DSP Libray (see Apache license below)
