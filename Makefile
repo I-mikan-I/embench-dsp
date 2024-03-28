@@ -8,7 +8,11 @@ TEST_DIR    =$(ROOT)/tests/$(TEST)
 
 include $(TEST_DIR)/test_inc.mk
 
-run:
+setup:
 	mkdir -p gen
-	gcc $(TEST_FLG) $(TEST_DEF) $(TEST_INC) $(TEST_SRC) $(ROOT)/main.c -o gen/runme
+
+build: setup
+	gcc $(TEST_FLG) $(TEST_SRC) $(ROOT)/main.c -o gen/runme
+
+run: setup build
 	./gen/runme
