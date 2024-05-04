@@ -30,8 +30,8 @@ TGT_DEF    += -DSTM32F407xx
 TGT_INC    += -I $(TGT_DIR)/.. -I $(TGT_DIR)
 
 ### FLAGS
-TGT_FLG    += $(TGT_ISA) $(TGT_DEF) $(TGT_INC) -g3 -O2 -flto -ffunction-sections -fdata-sections
-TGT_LD     +=  -Wl,--gc-sections -static -nostartfiles -Wl,--start-group -lc -lm -Wl,--end-group --specs=nano.specs -T $(TGT_DIR)/link.ld
+TGT_FLG    += $(TGT_ISA) $(TGT_DEF) $(TGT_INC) -g3 -O2 -ffunction-sections -fdata-sections
+TGT_LD     +=  -Wl,--gc-sections -static -Wl,--start-group -lc -lm -Wl,--end-group --specs=nano.specs -T $(TGT_DIR)/link.ld
 
 ### SOURCES
 TGT_SRC    += $(TGT_DIR)/boardsupport.c
