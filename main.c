@@ -1,6 +1,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#include "boardsupport.h"
+
 extern int test_main();
 
 
@@ -10,12 +12,13 @@ extern int test_main();
  */
 int __attribute__ ((used)) main (int argc __attribute__ ((unused)), char *argv[] __attribute__ ((unused)))
 {
-    uint32_t res = test_main();
+    uint32_t res;
 
-    if (res)
-        printf("\nTEST FAIL\n");
-    else
-        printf("\nTEST PASS\n");
+    init_board();
+    
+    res = test_main();
+
+    while(1){};
 
     return res;
 }

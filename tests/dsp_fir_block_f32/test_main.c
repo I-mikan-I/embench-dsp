@@ -1,7 +1,8 @@
 #include <stdint.h>
+#include <stdio.h>
 
 // includes for every benchmark
-// #include "support.h"
+#include "boardsupport.h"
 
 // includes for this benchmark
 #include "test_main.h"
@@ -25,7 +26,7 @@ extern float32_t refOutput[N_SAMPLES];
 
 
 /**
- * @brief Filter Coeffici
+ * @brief Filter Coefficients & State
  */
 
 // State Vector
@@ -51,7 +52,7 @@ int __attribute__ ((used)) test_main (int argc __attribute__ ((unused)), char *a
     embench_fir_init_f32(&filter_S, N_TAPS, coeff, filter_state, BLOCK_SIZE);
 
     // begin profiling
-    // start_trigger();
+    start_trigger();
 
     // iterate over the blocks
     for (ptr = 0; ptr < N_BLOCKS; ptr++) {
@@ -59,7 +60,7 @@ int __attribute__ ((used)) test_main (int argc __attribute__ ((unused)), char *a
     }
 
     // end profiling
-    // stop_trigger();
+    stop_trigger();
 
 #ifdef CHECK_SNR
     // calculate SNR of test output vs matlab reference output
@@ -69,6 +70,13 @@ int __attribute__ ((used)) test_main (int argc __attribute__ ((unused)), char *a
     // check correctness (if reference and actual filter outputs matched)
     fail_count += !(snr > SNR_REF_THLD);
 #endif
+
+    uint32_t ccnt = get_ccnt();
+
+    if (fail_count)
+        printf("TEST FAIL\n");
+    else
+        printf("TEST PASS\nCCNT = %i\n", ccnt);
 
     return !(fail_count == 0);
 }

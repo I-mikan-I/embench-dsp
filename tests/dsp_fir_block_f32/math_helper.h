@@ -40,10 +40,10 @@
 * -------------------------------------------------------------------- */
 
 
-#include "embench_math.h"
-
 #ifndef MATH_HELPER_H
 #define MATH_HELPER_H
+
+#include "embench_math.h"
 
 float snr_f32(float *pRef, float *pTest,  uint32_t buffSize);  
 void float_to_q12_20(float *pIn, q31_t * pOut, uint32_t numSamples);
