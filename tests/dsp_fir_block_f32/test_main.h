@@ -3,16 +3,16 @@
 
 
 #ifndef BLOCK_SIZE
-#define BLOCK_SIZE      32
+#define BLOCK_SIZE      128
 #endif
 
 
 #define CHECK_SNR
+#define SNR_REF_THLD    50
 
 
 #define N_TAPS          256
-#define N_SAMPLES       64
-#define SNR_REF_THLD    50
+#define N_SAMPLES       BLOCK_SIZE
 
 #define N_BLOCKS        (N_SAMPLES/BLOCK_SIZE)
 

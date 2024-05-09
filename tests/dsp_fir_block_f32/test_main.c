@@ -30,7 +30,7 @@ extern float32_t refOutput[N_SAMPLES];
  */
 
 // State Vector
-static float32_t filter_state [N_SAMPLES + N_TAPS - 1];
+static float32_t filter_state [N_TAPS + BLOCK_SIZE - 1];
 
 // Coefficient Array
 extern const float32_t coeff[N_TAPS];
@@ -45,8 +45,6 @@ int __attribute__ ((used)) test_main (int argc __attribute__ ((unused)), char *a
 {
     uint32_t fail_count = 0;
 
-    uint32_t ptr;
-
     // filter initialization
     embench_fir_instance_f32 filter_S;
     embench_fir_init_f32(&filter_S, N_TAPS, coeff, filter_state, BLOCK_SIZE);
@@ -54,10 +52,7 @@ int __attribute__ ((used)) test_main (int argc __attribute__ ((unused)), char *a
     // begin profiling
     start_trigger();
 
-    // iterate over the blocks
-    for (ptr = 0; ptr < N_BLOCKS; ptr++) {
-        embench_fir_f32(&filter_S, testInput + (ptr * BLOCK_SIZE), testOutput + (ptr * BLOCK_SIZE), BLOCK_SIZE);
-    }
+    embench_fir_f32(&filter_S, testInput, testOutput, BLOCK_SIZE);
 
     // end profiling
     stop_trigger();
