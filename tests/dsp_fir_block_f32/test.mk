@@ -41,8 +41,8 @@ TST_SRC    += $(DSP_DIR)/source/FilteringFunctions/embench_fir_f32.c
 TST_SRC    += $(DSP_DIR)/source/FilteringFunctions/embench_fir_init_f32.c
 
 # data files
-TST_SRC    += $(TST_DIR)/data/unfiltered_input.c
-TST_SRC    += $(TST_DIR)/data/coeff_256.c $(TST_DIR)/data/filtered_output_256.c
+TST_SRC    += $(TST_DIR)/data/testInput.c
+TST_SRC    += $(TST_DIR)/data/coeff.c $(TST_DIR)/data/refOutput.c
 
 ### OBJECTS
 TST_OBJ    +=$(patsubst %.c,%.o, $(patsubst %.S,%.o,$(notdir $(TST_SRC))))

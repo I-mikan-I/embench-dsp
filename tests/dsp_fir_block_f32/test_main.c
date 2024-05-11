@@ -30,7 +30,7 @@ extern float32_t refOutput[N_SAMPLES];
  */
 
 // State Vector
-static float32_t filter_state [N_TAPS + BLOCK_SIZE - 1];
+static float32_t filter_state [N_TAPS + N_SAMPLES - 1];
 
 // Coefficient Array
 extern const float32_t coeff[N_TAPS];
@@ -44,21 +44,25 @@ extern const float32_t coeff[N_TAPS];
 int __attribute__ ((used)) test_main (int argc __attribute__ ((unused)), char *argv[] __attribute__ ((unused)))
 {
     uint32_t fail_count = 0;
+    float32_t initialOutput[N_TAPS];
 
     // filter initialization
     embench_fir_instance_f32 filter_S;
-    embench_fir_init_f32(&filter_S, N_TAPS, coeff, filter_state, BLOCK_SIZE);
+    embench_fir_init_f32(&filter_S, N_TAPS, coeff, filter_state, N_SAMPLES);
+
+    // ignore the first N_TAPS outputs (bad output based on zero initial state)
+    embench_fir_f32(&filter_S, testInput, initialOutput, N_TAPS);
 
     // begin profiling
     start_trigger();
 
-    embench_fir_f32(&filter_S, testInput, testOutput, BLOCK_SIZE);
+    embench_fir_f32(&filter_S, (testInput + N_TAPS), testOutput, N_SAMPLES);
 
     // end profiling
     stop_trigger();
 
 #ifdef CHECK_SNR
-    // calculate SNR of test output vs matlab reference output
+    // calculate SNR of test output vs golden reference
     float32_t snr;
     snr = snr_f32(refOutput, testOutput, N_SAMPLES);
 
