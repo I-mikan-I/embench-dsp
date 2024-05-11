@@ -58,6 +58,7 @@ init_board ()
 void __attribute__ ((noinline))
 start_trigger ()
 {
+  ResetCycleCounter();
   EnableCycleCounter();
 }
 

@@ -43,6 +43,7 @@ extern const float32_t coeff[N_TAPS];
  */
 int __attribute__ ((used)) test_main (int argc __attribute__ ((unused)), char *argv[] __attribute__ ((unused)))
 {
+    uint32_t ccnt;
     uint32_t fail_count = 0;
     float32_t initialOutput[N_TAPS];
     uint32_t ptr;
@@ -65,6 +66,9 @@ int __attribute__ ((used)) test_main (int argc __attribute__ ((unused)), char *a
     // end profiling
     stop_trigger();
 
+    // get the cycle count
+    ccnt = get_ccnt();
+
 #ifdef CHECK_SNR
     // calculate SNR of test output vs golden reference
     float32_t snr;
@@ -73,8 +77,6 @@ int __attribute__ ((used)) test_main (int argc __attribute__ ((unused)), char *a
     // check correctness (if reference and actual filter outputs matched)
     fail_count += !(snr > SNR_REF_THLD);
 #endif
-
-    uint32_t ccnt = get_ccnt();
 
     if (fail_count)
         printf("TEST FAIL\n");
