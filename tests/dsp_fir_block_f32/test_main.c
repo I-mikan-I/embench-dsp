@@ -45,13 +45,17 @@ int __attribute__ ((used)) test_main (int argc __attribute__ ((unused)), char *a
 {
     uint32_t fail_count = 0;
     float32_t initialOutput[N_TAPS];
+    uint32_t ptr;
 
     // filter initialization
     embench_fir_instance_f32 filter_S;
     embench_fir_init_f32(&filter_S, N_TAPS, coeff, filter_state, N_SAMPLES);
 
     // ignore the first N_TAPS outputs (bad output based on zero initial state)
-    embench_fir_f32(&filter_S, testInput, initialOutput, N_TAPS);
+    for (ptr = 0; ptr < (N_TAPS/N_SAMPLES); ptr++)
+    {
+        embench_fir_f32(&filter_S, testInput + (ptr * N_SAMPLES), initialOutput + (ptr * N_SAMPLES), N_SAMPLES);
+    }
 
     // begin profiling
     start_trigger();
