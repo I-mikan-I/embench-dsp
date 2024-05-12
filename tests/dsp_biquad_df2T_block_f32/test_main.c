@@ -47,13 +47,12 @@ int __attribute__ ((used)) test_main (int argc __attribute__ ((unused)), char *a
     uint32_t ccnt;
     uint32_t fail_count = 0;
     float32_t initialOutput[N_INITIAL];
-    uint32_t ptr;
 
     // filter initialization
     embench_biquad_cascade_df2T_instance_f32 filter_S;
     embench_biquad_cascade_df2T_init_f32(&filter_S, N_STAGES, coeff, filter_state);
 
-    // ignore the initial outputs
+    // ignore the noisy outputs due to initial conditions
     embench_biquad_cascade_df2T_f32(&filter_S, testInput, initialOutput, N_INITIAL);
 
     // begin profiling
@@ -74,6 +73,18 @@ int __attribute__ ((used)) test_main (int argc __attribute__ ((unused)), char *a
 
     // check correctness (if reference and actual filter outputs matched)
     fail_count += !(snr > SNR_REF_THLD);
+
+    // print to a python list, useful for debug
+    // uint32_t ptr;
+    // for (ptr = 0; ptr < N_SAMPLES; ptr++)
+    // {
+    //     if (ptr == 0)
+    //         printf("testOutput = [%f, ", *(testOutput + ptr));
+    //     else if (ptr == (N_SAMPLES-1))
+    //         printf("%f]\n", *(testOutput + ptr));
+    //     else
+    //         printf("%f,", *(testOutput + ptr));
+    // }
 #endif
 
     if (fail_count)

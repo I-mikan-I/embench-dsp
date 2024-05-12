@@ -8,12 +8,20 @@ from scipy import signal
 
 
 test_name = 'dsp_biquad_df2T_block_f32'
-block_size = 128
+n_test_samples = 128
 
 testpath = os.path.join('tests', test_name)
 datapath = os.path.join(testpath, 'data')
 enable_plots = False
 enable_write_to_files = True
+
+
+def snr(tst, ref):
+    sz = min(len(tst), len(ref))
+    energy_tst = np.sum(tst * tst)
+    energy_err = np.sum((ref - tst) * (ref - tst))
+    snr = 10 * np.log10(energy_tst / energy_err)
+    return snr
 
 
 def moving_average(a, n=3):
@@ -64,6 +72,8 @@ Fs = 48000  # sampling frequency
 N = 6  # order
 Fc = 1000  # cutoff frequency
 
+n_stages = int(N/2)
+
 sos = signal.iirfilter(N, Fc, btype='lowpass', analog=False, ftype='butter', output='sos', fs=Fs)
 
 # print(len(sos), type(sos))
@@ -100,7 +110,7 @@ delay = lags[np.argmax(correlation)]
 # ignore noisy output from initial conditions
 diff = np.abs(filtered_x[delay:] - x_100hz[:-delay])
 diff = moving_average(diff, n=32)
-cutoff = np.where(diff < 0.00015)[0][0]
+n_initial_samples = np.where(diff < 0.00015)[0][0]
 
 
 """ Plot """
@@ -116,34 +126,43 @@ if enable_plots:
     # Plot the good part of the filtered signal vs a pure 100hz tone
     plt.figure(2)
     plt.plot(t, x_100hz)  # pure 100hz tone
-    plt.plot(t[cutoff:]-delay_t, filtered_x[cutoff:], 'r')  # the "good" part of the filtered signal
+    plt.plot(t[n_initial_samples:]-delay_t, filtered_x[n_initial_samples:], 'r')  # the "good" part of the filtered signal
     plt.xlabel('time')
     plt.legend(['pure 100hz tone', 'filtered x (good part)'])
 
     plt.show()
 
 
-""" Convert SOS to CMSIS format """
+""" Convert SOS to CMSIS-friendly format """
 # each row is [b0, b1, b2, a0, a1, a2]
 # make sure that a0 = 1 (divide each row by a0)
 coeff = sos / sos[:,3].reshape(3,1)
 # remove the a0 column and flip the signs of a1 and a2
 coeff = np.hstack((coeff[:,:3], -coeff[:,4:]))
-# flatten the array (N/2 stages * 5 coeffs per stage)
-coeff = np.reshape(coeff, int((N/2)*5))
-# print(coeff)
+# remove the total gain from the first section
+# and distribute it across all sections
+total_gain = coeff[0,0]
+sec_gain = np.power(total_gain, 1/n_stages)
+coeff[0,:3] = coeff[0,:3] / total_gain
+coeff[:,:3] = coeff[:,:3] * sec_gain
+# flatten the array (# stages * 5 coeffs per stage)
+coeff = np.reshape(coeff, n_stages*5)
+
 
 """ Write to file """
 if enable_write_to_files:
+    testInput = x[:n_initial_samples + n_test_samples]
+    refOutput = filtered_x[n_initial_samples:n_initial_samples + n_test_samples]
+
     elem_per_line = 8
     fname = os.path.join(datapath, 'coeff.c')
     write_to_file(fname, arr_name='coeff', arr=coeff, per_line=elem_per_line)
 
     fname = os.path.join(datapath, 'refOutput.c')
-    write_to_file(fname, arr_name='refOutput', arr=filtered_x[cutoff:cutoff+block_size], per_line=elem_per_line)
+    write_to_file(fname, arr_name='refOutput', arr=refOutput, per_line=elem_per_line)
 
     fname = os.path.join(datapath, 'testInput.c')
-    write_to_file(fname, arr_name='testInput', arr=x[:cutoff+block_size], per_line=elem_per_line)
+    write_to_file(fname, arr_name='testInput', arr=testInput, per_line=elem_per_line)
 
     fname = os.path.join(testpath, 'test_data.h')
-    write_to_header(fname, n_stages=int(N/2), n_samples=block_size, n_initial=cutoff)
+    write_to_header(fname, n_stages=n_stages, n_samples=n_test_samples, n_initial=n_initial_samples)
