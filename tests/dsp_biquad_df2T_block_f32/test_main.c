@@ -6,6 +6,7 @@
 
 // includes for this benchmark
 #include "test_main.h"
+#include "test_data.h"
 #include "embench_math.h"
 #include "math_helper.h"
 
@@ -15,7 +16,7 @@
  */
 
 // Input Samples
-extern float32_t testInput[N_SAMPLES];
+extern float32_t testInput[N_INITIAL + N_SAMPLES];
 
 // Test Result
 static float32_t testOutput[N_SAMPLES];
@@ -43,24 +44,28 @@ extern const float32_t coeff[5*N_STAGES];
  */
 int __attribute__ ((used)) test_main (int argc __attribute__ ((unused)), char *argv[] __attribute__ ((unused)))
 {
+    uint32_t ccnt;
     uint32_t fail_count = 0;
-
+    float32_t initialOutput[N_INITIAL];
     uint32_t ptr;
 
     // filter initialization
     embench_biquad_cascade_df2T_instance_f32 filter_S;
     embench_biquad_cascade_df2T_init_f32(&filter_S, N_STAGES, coeff, filter_state);
 
+    // ignore the initial outputs
+    embench_biquad_cascade_df2T_f32(&filter_S, testInput, initialOutput, N_INITIAL);
+
     // begin profiling
     start_trigger();
 
-    // iterate over the blocks
-    for (ptr = 0; ptr < N_BLOCKS; ptr++) {
-        embench_biquad_cascade_df2T_f32(&filter_S, testInput + (ptr * BLOCK_SIZE), testOutput + (ptr * BLOCK_SIZE), BLOCK_SIZE);
-    }
+    embench_biquad_cascade_df2T_f32(&filter_S, testInput + N_INITIAL, testOutput, N_SAMPLES);
 
     // end profiling
     stop_trigger();
+
+    // get the cycle count
+    ccnt = get_ccnt();
 
 #ifdef CHECK_SNR
     // calculate SNR of test output vs matlab reference output
@@ -70,8 +75,6 @@ int __attribute__ ((used)) test_main (int argc __attribute__ ((unused)), char *a
     // check correctness (if reference and actual filter outputs matched)
     fail_count += !(snr > SNR_REF_THLD);
 #endif
-
-    uint32_t ccnt = get_ccnt();
 
     if (fail_count)
         printf("TEST FAIL\nCCNT = %i\n", ccnt);
