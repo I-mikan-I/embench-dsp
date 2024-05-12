@@ -27,7 +27,7 @@ TGT_DEF    +=
 TGT_INC    += -I $(TGT_DIR)/..
 
 ### FLAGS
-TGT_FLG    += $(TGT_DEF) $(TGT_INC)
+TGT_FLG    += $(TGT_DEF)
 TGT_LD     +=
 
 ### SOURCES

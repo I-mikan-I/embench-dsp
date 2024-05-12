@@ -32,7 +32,7 @@ TST_DEF    +=
 TST_INC    += -I $(TST_DIR)
 
 ### FLAGS
-TST_FLG    += $(TST_DEF) $(TST_INC)
+TST_FLG    += $(TST_DEF)
 
 ### SOURCES
 TST_SRC    += $(TST_DIR)/test_main.c
