@@ -1,6 +1,3 @@
-# make run TEST=dsp_fir_block_f32
-# make run TEST=dsp_fir_block_f32 TARGET=stm32f4discovery TOOL=armgcc
-
 TEST       ?=hello
 TARGET     ?=dummy
 TOOL       ?=gcc
