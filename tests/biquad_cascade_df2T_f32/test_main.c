@@ -55,12 +55,17 @@ int __attribute__ ((used)) test_main (int argc __attribute__ ((unused)), char *a
     // calculate SNR of test output vs matlab reference output
     float32_t snr;
     snr = snr_f32(output_ref, output, N_SAMPLES);
-    // printf("output_ref=%f, output=%f\n", output_ref[0], output[0]);
 
     // check correctness (if reference and actual filter outputs matched)
     fail_count += (snr < SNR_REF_THLD);
 
     printf("SNR = %i\n", (int)snr);
+
+    // print output vs reference
+    // for (uint16_t i = 0; i < N_SAMPLES; i++)
+    // {
+    //   printf("output[%d]=%f, expected=%f\n", i, output[i], output_ref[i]);
+    // }
 
     // print to a python list, useful for debug
     // uint32_t ptr;

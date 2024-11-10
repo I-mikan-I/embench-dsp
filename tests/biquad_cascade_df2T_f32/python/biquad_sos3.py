@@ -6,6 +6,14 @@ import os
 
 from scipy import signal
 
+# USER: select number of samples
+#   desired clean output signal length (beyond initial noisy output)
+N             = 1
+
+# USER: script settings
+en_plots      = False
+en_filegen    = True
+
 
 # fixed seed for reproducibility
 np.random.seed(42)
@@ -14,12 +22,8 @@ np.random.seed(42)
 tst_path      = os.path.realpath(__file__)
 tst_path      = tst_path[:tst_path.find("python")]
 
-# script settings
-en_plots      = True
-en_filegen    = False
-
 # generated file path and names
-fpath         = os.path.join(tst_path, 'data')
+fpath         = os.path.join(tst_path, 'cfg')
 input_fnm     = "in.c"
 output_fnm    = "out.c"
 coeff_fnm     = "coeff.c"
@@ -50,7 +54,7 @@ def fwrite_array_f32(fname, arr_name, arr_size, arr, per_line):
     f.write("};\n")
 
 
-def fwrite_header(fname, n_sos, t_samples, n_initial, n_samples, frame_size, n_frames, snr_ref, input_arr_nm, output_arr_nm, coeff_arr_nm):
+def fwrite_header(fname, n_sos, t_samples, n_samples, snr_ref, input_arr_nm, output_arr_nm, coeff_arr_nm):
   outdir, f = os.path.split(fname)
   if not os.path.exists(outdir):
     os.makedirs(outdir)
@@ -60,10 +64,8 @@ def fwrite_header(fname, n_sos, t_samples, n_initial, n_samples, frame_size, n_f
     f.write("\n")
     f.write("#define N_STAGES        ({:d})\n".format(n_sos))
     f.write("#define TOTAL_SAMPLES   ({:d})\n".format(t_samples))
-    f.write("#define N_INITIAL       ({:d})\n".format(n_initial))
     f.write("#define N_SAMPLES       ({:d})\n".format(n_samples))
-    f.write("#define FRAME_SIZE      ({:d})\n".format(frame_size))
-    f.write("#define N_FRAMES        ({:d})\n".format(n_frames))
+    f.write("#define N_INITIAL       ({:d})\n".format(t_samples-n_samples))
     f.write("#define SNR_REF_THLD    ({:d})\n".format(snr_ref))
     f.write("\n")
     f.write("extern float32_t {:}[N_STAGES*5];\n".format(coeff_arr_nm))
@@ -114,12 +116,9 @@ sos = signal.iirfilter(N=order, Wn=fc, btype=btype, analog=False, ftype=ftype, o
 
 
 """ Input Stimulus """
-N          = 1024                  # starting signal length
-N_test     = 128                   # desired clean output signal length (beyond initial noisy output)
-frame_size = 128                   # frame size
-n_frames   = N_test // frame_size  # number of frames
+N_long = 1024                     # starting signal length
 
-n = np.arange(N)                  # sample indices
+n = np.arange(N_long)             # sample indices
 t = n / fs                        # discrete time
 
 tone_freq_hz = [100, 4000, 8000]  # input tones
@@ -134,7 +133,7 @@ for i in range(1, len(tone_freq_hz)):
 
 # optionally add zero-mean gaussian white noise
 if en_noise:
-  x = x_pure + (np.power(10, (noise_dB/20)) * np.random.normal(0, 1, N))
+  x = x_pure + (np.power(10, (noise_dB/20)) * np.random.normal(0, 1, N_long))
 else:
   x = x_pure
 
@@ -180,7 +179,7 @@ sos_32b = sos.astype(np.float32)
 y_32b = signal.sosfilt(sos_32b, x_32b)
 snr = snr_32b(y, y_32b)
 # the cmsis implementation seems to introduce some small extra loss of precision
-snr_ref = int(snr) - 1
+snr_ref = int(snr) - 5
 
 
 """ Plot """
@@ -210,8 +209,10 @@ if en_plots:
 
 """ Write to file """
 if en_filegen:
-  input = x[:N_initial + N_test]
-  output_ref = y[N_initial:N_initial + N_test]
+  input = x[:N_initial + N]
+  output_ref = y[N_initial:N_initial + N]
+
+  fpath         = os.path.join(fpath, 'sos{:}_n{:}'.format(n_sos, N))
 
   fname = os.path.join(fpath, coeff_fnm)
   fwrite_array_f32(fname, arr_name=coeff_arr_nm, arr=coeff, arr_size='N_STAGES*5', per_line=8)
@@ -223,7 +224,6 @@ if en_filegen:
   fwrite_array_f32(fname, arr_name=input_arr_nm, arr=input, arr_size='TOTAL_SAMPLES', per_line=8)
 
   fname = os.path.join(fpath, header_fnm)
-  fwrite_header(fname, n_sos=n_sos,
-                t_samples=(N_test+N_initial), n_initial=N_initial, n_samples=N_test, frame_size=frame_size, n_frames=n_frames,
-                snr_ref=snr_ref,
+  fwrite_header(fname, snr_ref=snr_ref, n_sos=n_sos,
+                t_samples=(N+N_initial), n_samples=N,
                 input_arr_nm=input_arr_nm, output_arr_nm=output_arr_nm, coeff_arr_nm=coeff_arr_nm)
