@@ -30,7 +30,8 @@ TST_SRC    +=$(CMN_DIR)/snr.c
 ##############################################################
 
 ifeq ($(CFG),)
-  CFG       =sos3_n64
+  CFG       =sos3_n128
+  $(warning WARNING: CFG not set for biquad_cascade_df2T_f32. Defaulting to CFG=sos3_n18)
 endif
 
 ### DEFINES
