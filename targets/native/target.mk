@@ -24,14 +24,14 @@ TGT_FLG    +=
 TGT_DEF    +=
 
 ### INCLUDES
-TGT_INC    += -I $(TGT_DIR)/..
+TGT_INC    +=-I $(TGT_DIR)/..
 
 ### FLAGS
-TGT_FLG    += $(TGT_DEF)
+TGT_FLG    +=$(TGT_DEF)
 TGT_LD     +=
 
 ### SOURCES
-TGT_SRC    += $(TGT_DIR)/boardsupport.c
+TGT_SRC    +=$(TGT_DIR)/boardsupport.c
 
 ### OBJECTS
 TGT_OBJ    +=$(patsubst %.c,%.o, $(patsubst %.S,%.o,$(notdir $(TGT_SRC))))

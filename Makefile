@@ -1,5 +1,5 @@
 TEST       ?=hello
-TARGET     ?=dummy
+TARGET     ?=native
 TOOL       ?=gcc
 OPT        ?=speed
 RUNDIR     ?=/Users/$(USER)/STM32CubeIDE/workspace/embench_dsp/Debug/.
@@ -8,6 +8,7 @@ ROOT       :=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
 TST_DIR     =$(ROOT)/tests/$(TEST)
 TGT_DIR     =$(ROOT)/targets/$(TARGET)
+CMN_DIR     =$(ROOT)/common
 
 include $(TST_DIR)/test.mk
 include $(TGT_DIR)/target.mk
@@ -21,21 +22,22 @@ ifeq ($(TOOL),gcc)
 	OBJDUMP   =objdump
 	EXE       =embench_dsp
 	SZ        =size
+	CC_FLG    =$(TGT_FLG) -g3 -ffunction-sections -fdata-sections -Wdouble-promotion $(TST_FLG)
 	SZ_FLG    =
 else ifeq ($(TOOL),armgcc)
     CC        =arm-none-eabi-gcc
 	OBJDUMP   =arm-none-eabi-objdump
 	SZ        =arm-none-eabi-size
 	EXE       =embench_dsp.elf
-	CC_FLG    =$(TGT_FLG) -g3 -ffunction-sections -fdata-sections $(TST_FLG)
-	LD_FLG    = -Wl,--gc-sections -static -Wl,--start-group -lc -lm -Wl,--end-group --specs=nano.specs $(TGT_LD)
-	SZ_FLG    = --format=GNU
+	CC_FLG    =$(TGT_FLG) -g3 -ffunction-sections -fdata-sections -fsingle-precision-constant -Wdouble-promotion $(TST_FLG)
+	LD_FLG    =-Wl,--gc-sections -static -Wl,--start-group -lc -lm -Wl,--end-group --specs=nano.specs $(TGT_LD)
+	SZ_FLG    =--format=GNU
 endif
 
 ifeq ($(OPT),speed)
-	CC_FLG += -O2
+	CC_FLG +=-O2
 else ifeq ($(OPT),size)
-	CC_FLG += -Os
+	CC_FLG +=-Os
 endif
 
 rebuild: clean build
@@ -53,7 +55,7 @@ link:
 	cd gen && $(CC) $(CC_FLG) $(LD_FLG) $(OBJ) -o $(EXE)
 
 disassemble:
-	cd gen && $(OBJDUMP) -h -S $(EXE) > embench_dsp.list
+	cd gen && $(OBJDUMP) -h -S $(EXE) > embench_dsp.lst
 
 size:
 	cd gen && $(SZ) $(SZ_FLG) $(EXE) > embench_dsp.size
