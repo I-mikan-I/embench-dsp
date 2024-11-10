@@ -8,11 +8,11 @@ from scipy import signal
 
 # USER: select number of samples
 #   desired clean output signal length (beyond initial noisy output)
-N             = 1
+N             = 128
 
 # USER: script settings
 en_plots      = False
-en_filegen    = True
+en_filegen    = False
 
 
 # fixed seed for reproducibility
