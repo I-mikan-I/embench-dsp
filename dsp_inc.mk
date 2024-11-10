@@ -17,4 +17,4 @@ DSP_DEF    +=
 # INCLUDES
 ##############################################################
 
-DSP_INC    += -I $(DSP_DIR)/include
+DSP_INC    +=-I $(DSP_DIR)/include

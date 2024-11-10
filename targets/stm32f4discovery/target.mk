@@ -21,23 +21,23 @@ TGT_FLG    +=
 ##############################################################
 
 ### ISA
-TGT_ISA     = -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb 
+TGT_ISA     =-mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb 
 
 ### DEFINES
-TGT_DEF    += -DSTM32F407xx
+TGT_DEF    +=-DSTM32F407xx
 
 ### INCLUDES
-TGT_INC    += -I $(TGT_DIR)/.. -I $(TGT_DIR)
+TGT_INC    +=-I $(TGT_DIR)/.. -I $(TGT_DIR)
 
 ### FLAGS
-TGT_FLG    += $(TGT_ISA) $(TGT_DEF)
-TGT_LD     += -T $(TGT_DIR)/link.ld
+TGT_FLG    +=$(TGT_ISA) $(TGT_DEF)
+TGT_LD     +=-T $(TGT_DIR)/link.ld
 
 ### SOURCES
-TGT_SRC    += $(TGT_DIR)/boardsupport.c
-TGT_SRC    += $(TGT_DIR)/startup.S
-TGT_SRC    += $(TGT_DIR)/syscalls.c
-TGT_SRC    += $(TGT_DIR)/system_stm32f4.c
+TGT_SRC    +=$(TGT_DIR)/boardsupport.c
+TGT_SRC    +=$(TGT_DIR)/startup.S
+TGT_SRC    +=$(TGT_DIR)/syscalls.c
+TGT_SRC    +=$(TGT_DIR)/system_stm32f4.c
 
 ### OBJECTS
 TGT_OBJ    +=$(patsubst %.c,%.o, $(patsubst %.S,%.o,$(notdir $(TGT_SRC))))
