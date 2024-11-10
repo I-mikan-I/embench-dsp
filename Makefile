@@ -18,26 +18,26 @@ OBJ         =$(TGT_OBJ) $(TST_OBJ) $(patsubst %.c,%.o, $(notdir $(ROOT)/main.c))
 INC         =$(TGT_INC) $(TST_INC)
 
 ifeq ($(TOOL),gcc)
-    CC        =gcc
-	OBJDUMP   =objdump
-	EXE       =embench_dsp
-	SZ        =size
-	CC_FLG    =$(TGT_FLG) -g3 -ffunction-sections -fdata-sections -Wdouble-promotion $(TST_FLG)
-	SZ_FLG    =
+  CC        =gcc
+  OBJDUMP   =objdump
+  EXE       =embench_dsp
+  SZ        =size
+  CC_FLG    =$(TGT_FLG) -g3 -ffunction-sections -fdata-sections -Wdouble-promotion $(TST_FLG)
+  SZ_FLG    =
 else ifeq ($(TOOL),armgcc)
-    CC        =arm-none-eabi-gcc
-	OBJDUMP   =arm-none-eabi-objdump
-	SZ        =arm-none-eabi-size
-	EXE       =embench_dsp.elf
-	CC_FLG    =$(TGT_FLG) -g3 -ffunction-sections -fdata-sections -fsingle-precision-constant -Wdouble-promotion $(TST_FLG)
-	LD_FLG    =-Wl,--gc-sections -static -Wl,--start-group -lc -lm -Wl,--end-group --specs=nano.specs $(TGT_LD)
-	SZ_FLG    =--format=GNU
+  CC        =arm-none-eabi-gcc
+  OBJDUMP   =arm-none-eabi-objdump
+  SZ        =arm-none-eabi-size
+  EXE       =embench_dsp.elf
+  CC_FLG    =$(TGT_FLG) -g3 -ffunction-sections -fdata-sections -fsingle-precision-constant -Wdouble-promotion $(TST_FLG)
+  LD_FLG    =-Wl,--gc-sections -static -Wl,--start-group -lc -lm -Wl,--end-group --specs=nano.specs $(TGT_LD)
+  SZ_FLG    =--format=GNU
 endif
 
 ifeq ($(OPT),speed)
-	CC_FLG +=-O2
+  CC_FLG   +=-O2
 else ifeq ($(OPT),size)
-	CC_FLG +=-Os
+  CC_FLG   +=-Os
 endif
 
 rebuild: clean build
