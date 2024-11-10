@@ -1,14 +1,5 @@
 /******************************************************************************
  * @file     basic_math_functions.h
- * @brief    Public header file for Embench DSP Library
- ******************************************************************************/
-/*
- * Modified from Arm CMSIS DSP Libray (see Apache license below)
- */
-
-
-/******************************************************************************
- * @file     basic_math_functions.h
  * @brief    Public header file for CMSIS DSP Library
  * @version  V1.10.0
  * @date     08 July 2021
@@ -33,10 +24,14 @@
  */
 
  
-#ifndef _BASIC_MATH_FUNCTIONS_H_
-#define _BASIC_MATH_FUNCTIONS_H_
+#ifndef BASIC_MATH_FUNCTIONS_H_
+#define BASIC_MATH_FUNCTIONS_H_
 
-#include "embench_math_types.h"
+#include "arm_math_types.h"
+// #include "arm_math_memory.h"
+
+#include "dsp/none.h"
+#include "dsp/utils.h"
 
 
 #ifdef   __cplusplus
@@ -55,7 +50,7 @@ extern "C"
    * @param[out] pDst       points to the output vector
    * @param[in]  blockSize  number of samples in each vector
    */
-  void embench_mult_q7(
+  void arm_mult_q7(
   const q7_t * pSrcA,
   const q7_t * pSrcB,
         q7_t * pDst,
@@ -69,7 +64,7 @@ extern "C"
    * @param[out] pDst       points to the output vector
    * @param[in]  blockSize  number of samples in each vector
    */
-  void embench_mult_q15(
+  void arm_mult_q15(
   const q15_t * pSrcA,
   const q15_t * pSrcB,
         q15_t * pDst,
@@ -83,7 +78,7 @@ extern "C"
    * @param[out] pDst       points to the output vector
    * @param[in]  blockSize  number of samples in each vector
    */
-  void embench_mult_q31(
+  void arm_mult_q31(
   const q31_t * pSrcA,
   const q31_t * pSrcB,
         q31_t * pDst,
@@ -97,7 +92,7 @@ extern "C"
    * @param[out] pDst       points to the output vector
    * @param[in]  blockSize  number of samples in each vector
    */
-  void embench_mult_f32(
+  void arm_mult_f32(
   const float32_t * pSrcA,
   const float32_t * pSrcB,
         float32_t * pDst,
@@ -105,29 +100,29 @@ extern "C"
 
 
 
-  /**
-   * @brief Floating-point vector multiplication.
-   * @param[in]  pSrcA      points to the first input vector
-   * @param[in]  pSrcB      points to the second input vector
-   * @param[out] pDst       points to the output vector
-   * @param[in]  blockSize  number of samples in each vector
-   */
-  void embench_mult_f64(
-  const float64_t * pSrcA,
-  const float64_t * pSrcB,
+/**
+ * @brief Floating-point vector multiplication.
+ * @param[in]  pSrcA      points to the first input vector
+ * @param[in]  pSrcB      points to the second input vector
+ * @param[out] pDst       points to the output vector
+ * @param[in]  blockSize  number of samples in each vector
+ */
+void arm_mult_f64(
+const float64_t * pSrcA,
+const float64_t * pSrcB,
 	  float64_t * pDst,
 	  uint32_t blockSize);
 
 
 
-  /**
+ /**
    * @brief Floating-point vector addition.
    * @param[in]  pSrcA      points to the first input vector
    * @param[in]  pSrcB      points to the second input vector
    * @param[out] pDst       points to the output vector
    * @param[in]  blockSize  number of samples in each vector
    */
-  void embench_add_f32(
+  void arm_add_f32(
   const float32_t * pSrcA,
   const float32_t * pSrcB,
         float32_t * pDst,
@@ -135,18 +130,18 @@ extern "C"
 
 
 
-  /**
-    * @brief Floating-point vector addition.
-    * @param[in]  pSrcA      points to the first input vector
-    * @param[in]  pSrcB      points to the second input vector
-    * @param[out] pDst       points to the output vector
-    * @param[in]  blockSize  number of samples in each vector
-    */
-  void embench_add_f64(
-  const float64_t * pSrcA,
-  const float64_t * pSrcB,
-	  float64_t * pDst,
-	  uint32_t blockSize);
+/**
+  * @brief Floating-point vector addition.
+  * @param[in]  pSrcA      points to the first input vector
+  * @param[in]  pSrcB      points to the second input vector
+  * @param[out] pDst       points to the output vector
+  * @param[in]  blockSize  number of samples in each vector
+  */
+ void arm_add_f64(
+ const float64_t * pSrcA,
+ const float64_t * pSrcB,
+	   float64_t * pDst,
+	   uint32_t blockSize);
 
 
 
@@ -157,7 +152,7 @@ extern "C"
    * @param[out] pDst       points to the output vector
    * @param[in]  blockSize  number of samples in each vector
    */
-  void embench_add_q7(
+  void arm_add_q7(
   const q7_t * pSrcA,
   const q7_t * pSrcB,
         q7_t * pDst,
@@ -171,7 +166,7 @@ extern "C"
    * @param[out] pDst       points to the output vector
    * @param[in]  blockSize  number of samples in each vector
    */
-  void embench_add_q15(
+  void arm_add_q15(
   const q15_t * pSrcA,
   const q15_t * pSrcB,
         q15_t * pDst,
@@ -185,7 +180,7 @@ extern "C"
    * @param[out] pDst       points to the output vector
    * @param[in]  blockSize  number of samples in each vector
    */
-  void embench_add_q31(
+  void arm_add_q31(
   const q31_t * pSrcA,
   const q31_t * pSrcB,
         q31_t * pDst,
@@ -199,7 +194,7 @@ extern "C"
    * @param[out] pDst       points to the output vector
    * @param[in]  blockSize  number of samples in each vector
    */
-  void embench_sub_f32(
+  void arm_sub_f32(
   const float32_t * pSrcA,
   const float32_t * pSrcB,
         float32_t * pDst,
@@ -214,7 +209,7 @@ extern "C"
    * @param[out] pDst       points to the output vector
    * @param[in]  blockSize  number of samples in each vector
    */
-  void embench_sub_f64(
+  void arm_sub_f64(
   const float64_t * pSrcA,
   const float64_t * pSrcB,
         float64_t * pDst,
@@ -229,7 +224,7 @@ extern "C"
    * @param[out] pDst       points to the output vector
    * @param[in]  blockSize  number of samples in each vector
    */
-  void embench_sub_q7(
+  void arm_sub_q7(
   const q7_t * pSrcA,
   const q7_t * pSrcB,
         q7_t * pDst,
@@ -243,7 +238,7 @@ extern "C"
    * @param[out] pDst       points to the output vector
    * @param[in]  blockSize  number of samples in each vector
    */
-  void embench_sub_q15(
+  void arm_sub_q15(
   const q15_t * pSrcA,
   const q15_t * pSrcB,
         q15_t * pDst,
@@ -257,7 +252,7 @@ extern "C"
    * @param[out] pDst       points to the output vector
    * @param[in]  blockSize  number of samples in each vector
    */
-  void embench_sub_q31(
+  void arm_sub_q31(
   const q31_t * pSrcA,
   const q31_t * pSrcB,
         q31_t * pDst,
@@ -271,7 +266,7 @@ extern "C"
    * @param[out] pDst       points to the output vector
    * @param[in]  blockSize  number of samples in the vector
    */
-  void embench_scale_f32(
+  void arm_scale_f32(
   const float32_t * pSrc,
         float32_t scale,
         float32_t * pDst,
@@ -286,7 +281,7 @@ extern "C"
    * @param[out] pDst       points to the output vector
    * @param[in]  blockSize  number of samples in the vector
    */
-  void embench_scale_f64(
+  void arm_scale_f64(
   const float64_t * pSrc,
         float64_t scale,
         float64_t * pDst,
@@ -302,7 +297,7 @@ extern "C"
    * @param[out] pDst        points to the output vector
    * @param[in]  blockSize   number of samples in the vector
    */
-  void embench_scale_q7(
+  void arm_scale_q7(
   const q7_t * pSrc,
         q7_t scaleFract,
         int8_t shift,
@@ -318,7 +313,7 @@ extern "C"
    * @param[out] pDst        points to the output vector
    * @param[in]  blockSize   number of samples in the vector
    */
-  void embench_scale_q15(
+  void arm_scale_q15(
   const q15_t * pSrc,
         q15_t scaleFract,
         int8_t shift,
@@ -334,7 +329,7 @@ extern "C"
    * @param[out] pDst        points to the output vector
    * @param[in]  blockSize   number of samples in the vector
    */
-  void embench_scale_q31(
+  void arm_scale_q31(
   const q31_t * pSrc,
         q31_t scaleFract,
         int8_t shift,
@@ -348,7 +343,7 @@ extern "C"
    * @param[out] pDst       points to the output buffer
    * @param[in]  blockSize  number of samples in each vector
    */
-  void embench_abs_q7(
+  void arm_abs_q7(
   const q7_t * pSrc,
         q7_t * pDst,
         uint32_t blockSize);
@@ -360,21 +355,21 @@ extern "C"
    * @param[out] pDst       points to the output buffer
    * @param[in]  blockSize  number of samples in each vector
    */
-  void embench_abs_f32(
+  void arm_abs_f32(
   const float32_t * pSrc,
         float32_t * pDst,
         uint32_t blockSize);
 
 
 
-  /**
-   * @brief Floating-point vector absolute value.
-   * @param[in]  pSrc       points to the input buffer
-   * @param[out] pDst       points to the output buffer
-   * @param[in]  blockSize  number of samples in each vector
-   */
-  void embench_abs_f64(
-  const float64_t * pSrc,
+/**
+ * @brief Floating-point vector absolute value.
+ * @param[in]  pSrc       points to the input buffer
+ * @param[out] pDst       points to the output buffer
+ * @param[in]  blockSize  number of samples in each vector
+ */
+void arm_abs_f64(
+const float64_t * pSrc,
 	  float64_t * pDst,
 	  uint32_t blockSize);
 
@@ -386,7 +381,7 @@ extern "C"
    * @param[out] pDst       points to the output buffer
    * @param[in]  blockSize  number of samples in each vector
    */
-  void embench_abs_q15(
+  void arm_abs_q15(
   const q15_t * pSrc,
         q15_t * pDst,
         uint32_t blockSize);
@@ -398,7 +393,7 @@ extern "C"
    * @param[out] pDst       points to the output buffer
    * @param[in]  blockSize  number of samples in each vector
    */
-  void embench_abs_q31(
+  void arm_abs_q31(
   const q31_t * pSrc,
         q31_t * pDst,
         uint32_t blockSize);
@@ -411,7 +406,7 @@ extern "C"
    * @param[in]  blockSize  number of samples in each vector
    * @param[out] result     output result returned here
    */
-  void embench_dot_prod_f32(
+  void arm_dot_prod_f32(
   const float32_t * pSrcA,
   const float32_t * pSrcB,
         uint32_t blockSize,
@@ -419,16 +414,16 @@ extern "C"
 
 
 
-  /**
-   * @brief Dot product of floating-point vectors.
-   * @param[in]  pSrcA      points to the first input vector
-   * @param[in]  pSrcB      points to the second input vector
-   * @param[in]  blockSize  number of samples in each vector
-   * @param[out] result     output result returned here
-   */
-  void embench_dot_prod_f64(
-  const float64_t * pSrcA,
-  const float64_t * pSrcB,
+/**
+ * @brief Dot product of floating-point vectors.
+ * @param[in]  pSrcA      points to the first input vector
+ * @param[in]  pSrcB      points to the second input vector
+ * @param[in]  blockSize  number of samples in each vector
+ * @param[out] result     output result returned here
+ */
+void arm_dot_prod_f64(
+const float64_t * pSrcA,
+const float64_t * pSrcB,
 	  uint32_t blockSize,
 	  float64_t * result);
 
@@ -441,7 +436,7 @@ extern "C"
    * @param[in]  blockSize  number of samples in each vector
    * @param[out] result     output result returned here
    */
-  void embench_dot_prod_q7(
+  void arm_dot_prod_q7(
   const q7_t * pSrcA,
   const q7_t * pSrcB,
         uint32_t blockSize,
@@ -455,7 +450,7 @@ extern "C"
    * @param[in]  blockSize  number of samples in each vector
    * @param[out] result     output result returned here
    */
-  void embench_dot_prod_q15(
+  void arm_dot_prod_q15(
   const q15_t * pSrcA,
   const q15_t * pSrcB,
         uint32_t blockSize,
@@ -469,7 +464,7 @@ extern "C"
    * @param[in]  blockSize  number of samples in each vector
    * @param[out] result     output result returned here
    */
-  void embench_dot_prod_q31(
+  void arm_dot_prod_q31(
   const q31_t * pSrcA,
   const q31_t * pSrcB,
         uint32_t blockSize,
@@ -483,7 +478,7 @@ extern "C"
    * @param[out] pDst       points to the output vector
    * @param[in]  blockSize  number of samples in the vector
    */
-  void embench_shift_q7(
+  void arm_shift_q7(
   const q7_t * pSrc,
         int8_t shiftBits,
         q7_t * pDst,
@@ -497,7 +492,7 @@ extern "C"
    * @param[out] pDst       points to the output vector
    * @param[in]  blockSize  number of samples in the vector
    */
-  void embench_shift_q15(
+  void arm_shift_q15(
   const q15_t * pSrc,
         int8_t shiftBits,
         q15_t * pDst,
@@ -511,22 +506,22 @@ extern "C"
    * @param[out] pDst       points to the output vector
    * @param[in]  blockSize  number of samples in the vector
    */
-  void embench_shift_q31(
+  void arm_shift_q31(
   const q31_t * pSrc,
         int8_t shiftBits,
         q31_t * pDst,
         uint32_t blockSize);
 
 
-  /**
-   * @brief  Adds a constant offset to a floating-point vector.
-   * @param[in]  pSrc       points to the input vector
-   * @param[in]  offset     is the offset to be added
-   * @param[out] pDst       points to the output vector
-   * @param[in]  blockSize  number of samples in the vector
-   */
-  void embench_offset_f64(
-  const float64_t * pSrc,
+/**
+ * @brief  Adds a constant offset to a floating-point vector.
+ * @param[in]  pSrc       points to the input vector
+ * @param[in]  offset     is the offset to be added
+ * @param[out] pDst       points to the output vector
+ * @param[in]  blockSize  number of samples in the vector
+ */
+void arm_offset_f64(
+const float64_t * pSrc,
 	  float64_t offset,
 	  float64_t * pDst,
 	  uint32_t blockSize);
@@ -540,7 +535,7 @@ extern "C"
    * @param[out] pDst       points to the output vector
    * @param[in]  blockSize  number of samples in the vector
    */
-  void embench_offset_f32(
+  void arm_offset_f32(
   const float32_t * pSrc,
         float32_t offset,
         float32_t * pDst,
@@ -555,7 +550,7 @@ extern "C"
    * @param[out] pDst       points to the output vector
    * @param[in]  blockSize  number of samples in the vector
    */
-  void embench_offset_q7(
+  void arm_offset_q7(
   const q7_t * pSrc,
         q7_t offset,
         q7_t * pDst,
@@ -569,7 +564,7 @@ extern "C"
    * @param[out] pDst       points to the output vector
    * @param[in]  blockSize  number of samples in the vector
    */
-  void embench_offset_q15(
+  void arm_offset_q15(
   const q15_t * pSrc,
         q15_t offset,
         q15_t * pDst,
@@ -583,7 +578,7 @@ extern "C"
    * @param[out] pDst       points to the output vector
    * @param[in]  blockSize  number of samples in the vector
    */
-  void embench_offset_q31(
+  void arm_offset_q31(
   const q31_t * pSrc,
         q31_t offset,
         q31_t * pDst,
@@ -596,21 +591,21 @@ extern "C"
    * @param[out] pDst       points to the output vector
    * @param[in]  blockSize  number of samples in the vector
    */
-  void embench_negate_f32(
+  void arm_negate_f32(
   const float32_t * pSrc,
         float32_t * pDst,
         uint32_t blockSize);
 
 
 
-  /**
-   * @brief  Negates the elements of a floating-point vector.
-   * @param[in]  pSrc       points to the input vector
-   * @param[out] pDst       points to the output vector
-   * @param[in]  blockSize  number of samples in the vector
-   */
-  void embench_negate_f64(
-  const float64_t * pSrc,
+/**
+ * @brief  Negates the elements of a floating-point vector.
+ * @param[in]  pSrc       points to the input vector
+ * @param[out] pDst       points to the output vector
+ * @param[in]  blockSize  number of samples in the vector
+ */
+void arm_negate_f64(
+const float64_t * pSrc,
 	  float64_t * pDst,
 	  uint32_t blockSize);
 
@@ -622,7 +617,7 @@ extern "C"
    * @param[out] pDst       points to the output vector
    * @param[in]  blockSize  number of samples in the vector
    */
-  void embench_negate_q7(
+  void arm_negate_q7(
   const q7_t * pSrc,
         q7_t * pDst,
         uint32_t blockSize);
@@ -634,7 +629,7 @@ extern "C"
    * @param[out] pDst       points to the output vector
    * @param[in]  blockSize  number of samples in the vector
    */
-  void embench_negate_q15(
+  void arm_negate_q15(
   const q15_t * pSrc,
         q15_t * pDst,
         uint32_t blockSize);
@@ -646,19 +641,19 @@ extern "C"
    * @param[out] pDst       points to the output vector
    * @param[in]  blockSize  number of samples in the vector
    */
-  void embench_negate_q31(
+  void arm_negate_q31(
   const q31_t * pSrc,
         q31_t * pDst,
         uint32_t blockSize);
 
-  /**
+/**
    * @brief         Compute the logical bitwise AND of two fixed-point vectors.
    * @param[in]     pSrcA      points to input vector A
    * @param[in]     pSrcB      points to input vector B
    * @param[out]    pDst       points to output vector
    * @param[in]     blockSize  number of samples in each vector
    */
-  void embench_and_u16(
+  void arm_and_u16(
     const uint16_t * pSrcA,
     const uint16_t * pSrcB,
           uint16_t * pDst,
@@ -671,7 +666,7 @@ extern "C"
    * @param[out]    pDst       points to output vector
    * @param[in]     blockSize  number of samples in each vector
    */
-  void embench_and_u32(
+  void arm_and_u32(
     const uint32_t * pSrcA,
     const uint32_t * pSrcB,
           uint32_t * pDst,
@@ -684,7 +679,7 @@ extern "C"
    * @param[out]    pDst       points to output vector
    * @param[in]     blockSize  number of samples in each vector
    */
-  void embench_and_u8(
+  void arm_and_u8(
     const uint8_t * pSrcA,
     const uint8_t * pSrcB,
           uint8_t * pDst,
@@ -697,7 +692,7 @@ extern "C"
    * @param[out]    pDst       points to output vector
    * @param[in]     blockSize  number of samples in each vector
    */
-  void embench_or_u16(
+  void arm_or_u16(
     const uint16_t * pSrcA,
     const uint16_t * pSrcB,
           uint16_t * pDst,
@@ -710,7 +705,7 @@ extern "C"
    * @param[out]    pDst       points to output vector
    * @param[in]     blockSize  number of samples in each vector
    */
-  void embench_or_u32(
+  void arm_or_u32(
     const uint32_t * pSrcA,
     const uint32_t * pSrcB,
           uint32_t * pDst,
@@ -723,7 +718,7 @@ extern "C"
    * @param[out]    pDst       points to output vector
    * @param[in]     blockSize  number of samples in each vector
    */
-  void embench_or_u8(
+  void arm_or_u8(
     const uint8_t * pSrcA,
     const uint8_t * pSrcB,
           uint8_t * pDst,
@@ -735,7 +730,7 @@ extern "C"
    * @param[out]    pDst       points to output vector
    * @param[in]     blockSize  number of samples in each vector
    */
-  void embench_not_u16(
+  void arm_not_u16(
     const uint16_t * pSrc,
           uint16_t * pDst,
           uint32_t blockSize);
@@ -746,7 +741,7 @@ extern "C"
    * @param[out]    pDst       points to output vector
    * @param[in]     blockSize  number of samples in each vector
    */
-  void embench_not_u32(
+  void arm_not_u32(
     const uint32_t * pSrc,
           uint32_t * pDst,
           uint32_t blockSize);
@@ -757,19 +752,19 @@ extern "C"
    * @param[out]    pDst       points to output vector
    * @param[in]     blockSize  number of samples in each vector
    */
-  void embench_not_u8(
+  void arm_not_u8(
     const uint8_t * pSrc,
           uint8_t * pDst,
           uint32_t blockSize);
 
-  /**
+/**
    * @brief         Compute the logical bitwise XOR of two fixed-point vectors.
    * @param[in]     pSrcA      points to input vector A
    * @param[in]     pSrcB      points to input vector B
    * @param[out]    pDst       points to output vector
    * @param[in]     blockSize  number of samples in each vector
    */
-  void embench_xor_u16(
+  void arm_xor_u16(
     const uint16_t * pSrcA,
     const uint16_t * pSrcB,
           uint16_t * pDst,
@@ -782,7 +777,7 @@ extern "C"
    * @param[out]    pDst       points to output vector
    * @param[in]     blockSize  number of samples in each vector
    */
-  void embench_xor_u32(
+  void arm_xor_u32(
     const uint32_t * pSrcA,
     const uint32_t * pSrcB,
           uint32_t * pDst,
@@ -795,71 +790,71 @@ extern "C"
    * @param[out]    pDst       points to output vector
    * @param[in]     blockSize  number of samples in each vector
    */
-  void embench_xor_u8(
+  void arm_xor_u8(
     const uint8_t * pSrcA,
     const uint8_t * pSrcB,
           uint8_t * pDst,
     uint32_t blockSize);
 
-//   /**
-//   @brief         Elementwise floating-point clipping
-//   @param[in]     pSrc          points to input values
-//   @param[out]    pDst          points to output clipped values
-//   @param[in]     low           lower bound
-//   @param[in]     high          higher bound
-//   @param[in]     numSamples    number of samples to clip
-//  */
+  /**
+  @brief         Elementwise floating-point clipping
+  @param[in]     pSrc          points to input values
+  @param[out]    pDst          points to output clipped values
+  @param[in]     low           lower bound
+  @param[in]     high          higher bound
+  @param[in]     numSamples    number of samples to clip
+ */
 
-// void embench_clip_f32(const float32_t * pSrc, 
-//   float32_t * pDst, 
-//   float32_t low, 
-//   float32_t high, 
-//   uint32_t numSamples);
+void arm_clip_f32(const float32_t * pSrc, 
+  float32_t * pDst, 
+  float32_t low, 
+  float32_t high, 
+  uint32_t numSamples);
 
   /**
-   * @brief         Elementwise fixed-point clipping
-   * @param[in]     pSrc          points to input values
-   * @param[out]    pDst          points to output clipped values
-   * @param[in]     low           lower bound
-   * @param[in]     high          higher bound
-   * @param[in]     numSamples    number of samples to clip
-   */
-  void embench_clip_q31(
-    const q31_t * pSrc, 
-    q31_t * pDst, 
-    q31_t low, 
-    q31_t high, 
-    uint32_t numSamples);
+  @brief         Elementwise fixed-point clipping
+  @param[in]     pSrc          points to input values
+  @param[out]    pDst          points to output clipped values
+  @param[in]     low           lower bound
+  @param[in]     high          higher bound
+  @param[in]     numSamples    number of samples to clip
+ */
+
+void arm_clip_q31(const q31_t * pSrc, 
+  q31_t * pDst, 
+  q31_t low, 
+  q31_t high, 
+  uint32_t numSamples);
 
   /**
-   * @brief         Elementwise fixed-point clipping
-   * @param[in]     pSrc          points to input values
-   * @param[out]    pDst          points to output clipped values
-   * @param[in]     low           lower bound
-   * @param[in]     high          higher bound
-   * @param[in]     numSamples    number of samples to clip
-   */
-  void embench_clip_q15(
-    const q15_t * pSrc, 
-    q15_t * pDst, 
-    q15_t low, 
-    q15_t high, 
-    uint32_t numSamples);
+  @brief         Elementwise fixed-point clipping
+  @param[in]     pSrc          points to input values
+  @param[out]    pDst          points to output clipped values
+  @param[in]     low           lower bound
+  @param[in]     high          higher bound
+  @param[in]     numSamples    number of samples to clip
+ */
+
+void arm_clip_q15(const q15_t * pSrc, 
+  q15_t * pDst, 
+  q15_t low, 
+  q15_t high, 
+  uint32_t numSamples);
 
   /**
-   * @brief         Elementwise fixed-point clipping
-   * @param[in]     pSrc          points to input values
-   * @param[out]    pDst          points to output clipped values
-   * @param[in]     low           lower bound
-   * @param[in]     high          higher bound
-   * @param[in]     numSamples    number of samples to clip
-   */
-  void embench_clip_q7(
-    const q7_t * pSrc, 
-    q7_t * pDst, 
-    q7_t low, 
-    q7_t high, 
-    uint32_t numSamples);
+  @brief         Elementwise fixed-point clipping
+  @param[in]     pSrc          points to input values
+  @param[out]    pDst          points to output clipped values
+  @param[in]     low           lower bound
+  @param[in]     high          higher bound
+  @param[in]     numSamples    number of samples to clip
+ */
+
+void arm_clip_q7(const q7_t * pSrc, 
+  q7_t * pDst, 
+  q7_t low, 
+  q7_t high, 
+  uint32_t numSamples);
 
 
 #ifdef   __cplusplus

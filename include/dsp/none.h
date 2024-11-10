@@ -1,14 +1,5 @@
 /******************************************************************************
  * @file     none.h
- * @brief    Public header file for Embench DSP Library
- ******************************************************************************/
-/*
- * Modified from Arm CMSIS DSP Libray (see Apache license below)
- */
-
-
-/******************************************************************************
- * @file     none.h
  * @brief    Intrinsincs when no DSP extension available
  * @version  V1.9.0
  * @date     20. July 2020
@@ -43,17 +34,87 @@ of intrinsics.
 
 */
  
-#ifndef _NONE_H_
-#define _NONE_H_
+#ifndef NONE_H_
+#define NONE_H_
 
-#include "embench_math_types.h"
+#include "arm_math_types.h"
 
 #ifdef   __cplusplus
 extern "C"
 {
 #endif
 
-/**
+ 
+
+  __STATIC_FORCEINLINE uint8_t __CLZ(uint32_t data)
+  {
+    if (data == 0U) { return 32U; }
+
+    uint32_t count = 0U;
+    uint32_t mask = 0x80000000U;
+
+    while ((data & mask) == 0U)
+    {
+      count += 1U;
+      mask = mask >> 1U;
+    }
+    return count;
+  }
+
+  __STATIC_FORCEINLINE int32_t __SSAT(int32_t val, uint32_t sat)
+  {
+    if ((sat >= 1U) && (sat <= 32U))
+    {
+      const int32_t max = (int32_t)((1U << (sat - 1U)) - 1U);
+      const int32_t min = -1 - max ;
+      if (val > max)
+      {
+        return max;
+      }
+      else if (val < min)
+      {
+        return min;
+      }
+    }
+    return val;
+  }
+
+  __STATIC_FORCEINLINE uint32_t __USAT(int32_t val, uint32_t sat)
+  {
+    if (sat <= 31U)
+    {
+      const uint32_t max = ((1U << sat) - 1U);
+      if (val > (int32_t)max)
+      {
+        return max;
+      }
+      else if (val < 0)
+      {
+        return 0U;
+      }
+    }
+    return (uint32_t)val;
+  }
+
+  /**
+    \brief   Rotate Right in unsigned value (32 bit)
+    \details Rotate Right (immediate) provides the value of the contents of a register rotated by a variable number of bits.
+    \param [in]    op1  Value to rotate
+    \param [in]    op2  Number of Bits to rotate
+    \return               Rotated value
+  */
+  __STATIC_FORCEINLINE uint32_t __ROR(uint32_t op1, uint32_t op2)
+  {
+    op2 %= 32U;
+    if (op2 == 0U)
+    {
+      return op1;
+    }
+    return (op1 >> op2) | (op1 << (32U - op2));
+  }
+
+
+  /**
    * @brief Clips Q63 to Q31 values.
    */
   __STATIC_FORCEINLINE q31_t clip_q63_to_q31(
@@ -128,19 +189,20 @@ extern "C"
 #define mult_32x32_keep32(a, x, y) \
     a = (q31_t) (((q63_t) x * y ) >> 32)
 
-
-/**
-  * @brief definition to pack two 16 bit values.
-  */
-#define __PKHBT(ARG1, ARG2, ARG3) ( (((int32_t)(ARG1) <<    0) & (int32_t)0x0000FFFF) | \
-                                    (((int32_t)(ARG2) << ARG3) & (int32_t)0xFFFF0000)  )
-#define __PKHTB(ARG1, ARG2, ARG3) ( (((int32_t)(ARG1) <<    0) & (int32_t)0xFFFF0000) | \
-                                    (((int32_t)(ARG2) >> ARG3) & (int32_t)0x0000FFFF)  )
+#ifndef ARM_MATH_DSP
+  /**
+   * @brief definition to pack two 16 bit values.
+   */
+  #define __PKHBT(ARG1, ARG2, ARG3) ( (((int32_t)(ARG1) <<    0) & (int32_t)0x0000FFFF) | \
+                                      (((int32_t)(ARG2) << ARG3) & (int32_t)0xFFFF0000)  )
+  #define __PKHTB(ARG1, ARG2, ARG3) ( (((int32_t)(ARG1) <<    0) & (int32_t)0xFFFF0000) | \
+                                      (((int32_t)(ARG2) >> ARG3) & (int32_t)0x0000FFFF)  )
+#endif
 
    /**
    * @brief definition to pack four 8 bit values.
    */
-#ifndef MATH_BIG_ENDIAN
+#ifndef ARM_MATH_BIG_ENDIAN
   #define __PACKq7(v0,v1,v2,v3) ( (((int32_t)(v0) <<  0) & (int32_t)0x000000FF) | \
                                   (((int32_t)(v1) <<  8) & (int32_t)0x0000FF00) | \
                                   (((int32_t)(v2) << 16) & (int32_t)0x00FF0000) | \
@@ -160,332 +222,332 @@ extern "C"
  */
 
 
-/*
-  * @brief C custom defined QADD8
-  */
-__STATIC_FORCEINLINE uint32_t __QADD8(
-uint32_t x,
-uint32_t y)
-{
-  q31_t r, s, t, u;
+  /*
+   * @brief C custom defined QADD8
+   */
+  __STATIC_FORCEINLINE uint32_t __QADD8(
+  uint32_t x,
+  uint32_t y)
+  {
+    q31_t r, s, t, u;
 
-  r = __SSAT(((((q31_t)x << 24) >> 24) + (((q31_t)y << 24) >> 24)), 8) & (int32_t)0x000000FF;
-  s = __SSAT(((((q31_t)x << 16) >> 24) + (((q31_t)y << 16) >> 24)), 8) & (int32_t)0x000000FF;
-  t = __SSAT(((((q31_t)x <<  8) >> 24) + (((q31_t)y <<  8) >> 24)), 8) & (int32_t)0x000000FF;
-  u = __SSAT(((((q31_t)x      ) >> 24) + (((q31_t)y      ) >> 24)), 8) & (int32_t)0x000000FF;
+    r = __SSAT(((((q31_t)x << 24) >> 24) + (((q31_t)y << 24) >> 24)), 8) & (int32_t)0x000000FF;
+    s = __SSAT(((((q31_t)x << 16) >> 24) + (((q31_t)y << 16) >> 24)), 8) & (int32_t)0x000000FF;
+    t = __SSAT(((((q31_t)x <<  8) >> 24) + (((q31_t)y <<  8) >> 24)), 8) & (int32_t)0x000000FF;
+    u = __SSAT(((((q31_t)x      ) >> 24) + (((q31_t)y      ) >> 24)), 8) & (int32_t)0x000000FF;
 
-  return ((uint32_t)((u << 24) | (t << 16) | (s <<  8) | (r      )));
-}
-
-
-/*
-  * @brief C custom defined QSUB8
-  */
-__STATIC_FORCEINLINE uint32_t __QSUB8(
-uint32_t x,
-uint32_t y)
-{
-  q31_t r, s, t, u;
-
-  r = __SSAT(((((q31_t)x << 24) >> 24) - (((q31_t)y << 24) >> 24)), 8) & (int32_t)0x000000FF;
-  s = __SSAT(((((q31_t)x << 16) >> 24) - (((q31_t)y << 16) >> 24)), 8) & (int32_t)0x000000FF;
-  t = __SSAT(((((q31_t)x <<  8) >> 24) - (((q31_t)y <<  8) >> 24)), 8) & (int32_t)0x000000FF;
-  u = __SSAT(((((q31_t)x      ) >> 24) - (((q31_t)y      ) >> 24)), 8) & (int32_t)0x000000FF;
-
-  return ((uint32_t)((u << 24) | (t << 16) | (s <<  8) | (r      )));
-}
+    return ((uint32_t)((u << 24) | (t << 16) | (s <<  8) | (r      )));
+  }
 
 
-/*
-  * @brief C custom defined QADD16
-  */
-__STATIC_FORCEINLINE uint32_t __QADD16(
-uint32_t x,
-uint32_t y)
-{
-/*  q31_t r,     s;  without initialisation 'embench_offset_q15 test' fails  but 'intrinsic' tests pass! for armCC */
-  q31_t r = 0, s = 0;
+  /*
+   * @brief C custom defined QSUB8
+   */
+  __STATIC_FORCEINLINE uint32_t __QSUB8(
+  uint32_t x,
+  uint32_t y)
+  {
+    q31_t r, s, t, u;
 
-  r = __SSAT(((((q31_t)x << 16) >> 16) + (((q31_t)y << 16) >> 16)), 16) & (int32_t)0x0000FFFF;
-  s = __SSAT(((((q31_t)x      ) >> 16) + (((q31_t)y      ) >> 16)), 16) & (int32_t)0x0000FFFF;
+    r = __SSAT(((((q31_t)x << 24) >> 24) - (((q31_t)y << 24) >> 24)), 8) & (int32_t)0x000000FF;
+    s = __SSAT(((((q31_t)x << 16) >> 24) - (((q31_t)y << 16) >> 24)), 8) & (int32_t)0x000000FF;
+    t = __SSAT(((((q31_t)x <<  8) >> 24) - (((q31_t)y <<  8) >> 24)), 8) & (int32_t)0x000000FF;
+    u = __SSAT(((((q31_t)x      ) >> 24) - (((q31_t)y      ) >> 24)), 8) & (int32_t)0x000000FF;
 
-  return ((uint32_t)((s << 16) | (r      )));
-}
-
-
-/*
-  * @brief C custom defined SHADD16
-  */
-__STATIC_FORCEINLINE uint32_t __SHADD16(
-uint32_t x,
-uint32_t y)
-{
-  q31_t r, s;
-
-  r = (((((q31_t)x << 16) >> 16) + (((q31_t)y << 16) >> 16)) >> 1) & (int32_t)0x0000FFFF;
-  s = (((((q31_t)x      ) >> 16) + (((q31_t)y      ) >> 16)) >> 1) & (int32_t)0x0000FFFF;
-
-  return ((uint32_t)((s << 16) | (r      )));
-}
+    return ((uint32_t)((u << 24) | (t << 16) | (s <<  8) | (r      )));
+  }
 
 
-/*
-  * @brief C custom defined QSUB16
-  */
-__STATIC_FORCEINLINE uint32_t __QSUB16(
-uint32_t x,
-uint32_t y)
-{
-  q31_t r, s;
+  /*
+   * @brief C custom defined QADD16
+   */
+  __STATIC_FORCEINLINE uint32_t __QADD16(
+  uint32_t x,
+  uint32_t y)
+  {
+/*  q31_t r,     s;  without initialisation 'arm_offset_q15 test' fails  but 'intrinsic' tests pass! for armCC */
+    q31_t r = 0, s = 0;
 
-  r = __SSAT(((((q31_t)x << 16) >> 16) - (((q31_t)y << 16) >> 16)), 16) & (int32_t)0x0000FFFF;
-  s = __SSAT(((((q31_t)x      ) >> 16) - (((q31_t)y      ) >> 16)), 16) & (int32_t)0x0000FFFF;
+    r = __SSAT(((((q31_t)x << 16) >> 16) + (((q31_t)y << 16) >> 16)), 16) & (int32_t)0x0000FFFF;
+    s = __SSAT(((((q31_t)x      ) >> 16) + (((q31_t)y      ) >> 16)), 16) & (int32_t)0x0000FFFF;
 
-  return ((uint32_t)((s << 16) | (r      )));
-}
-
-
-/*
-  * @brief C custom defined SHSUB16
-  */
-__STATIC_FORCEINLINE uint32_t __SHSUB16(
-uint32_t x,
-uint32_t y)
-{
-  q31_t r, s;
-
-  r = (((((q31_t)x << 16) >> 16) - (((q31_t)y << 16) >> 16)) >> 1) & (int32_t)0x0000FFFF;
-  s = (((((q31_t)x      ) >> 16) - (((q31_t)y      ) >> 16)) >> 1) & (int32_t)0x0000FFFF;
-
-  return ((uint32_t)((s << 16) | (r      )));
-}
+    return ((uint32_t)((s << 16) | (r      )));
+  }
 
 
-/*
-  * @brief C custom defined QASX
-  */
-__STATIC_FORCEINLINE uint32_t __QASX(
-uint32_t x,
-uint32_t y)
-{
-  q31_t r, s;
+  /*
+   * @brief C custom defined SHADD16
+   */
+  __STATIC_FORCEINLINE uint32_t __SHADD16(
+  uint32_t x,
+  uint32_t y)
+  {
+    q31_t r, s;
 
-  r = __SSAT(((((q31_t)x << 16) >> 16) - (((q31_t)y      ) >> 16)), 16) & (int32_t)0x0000FFFF;
-  s = __SSAT(((((q31_t)x      ) >> 16) + (((q31_t)y << 16) >> 16)), 16) & (int32_t)0x0000FFFF;
+    r = (((((q31_t)x << 16) >> 16) + (((q31_t)y << 16) >> 16)) >> 1) & (int32_t)0x0000FFFF;
+    s = (((((q31_t)x      ) >> 16) + (((q31_t)y      ) >> 16)) >> 1) & (int32_t)0x0000FFFF;
 
-  return ((uint32_t)((s << 16) | (r      )));
-}
-
-
-/*
-  * @brief C custom defined SHASX
-  */
-__STATIC_FORCEINLINE uint32_t __SHASX(
-uint32_t x,
-uint32_t y)
-{
-  q31_t r, s;
-
-  r = (((((q31_t)x << 16) >> 16) - (((q31_t)y      ) >> 16)) >> 1) & (int32_t)0x0000FFFF;
-  s = (((((q31_t)x      ) >> 16) + (((q31_t)y << 16) >> 16)) >> 1) & (int32_t)0x0000FFFF;
-
-  return ((uint32_t)((s << 16) | (r      )));
-}
+    return ((uint32_t)((s << 16) | (r      )));
+  }
 
 
-/*
-  * @brief C custom defined QSAX
-  */
-__STATIC_FORCEINLINE uint32_t __QSAX(
-uint32_t x,
-uint32_t y)
-{
-  q31_t r, s;
+  /*
+   * @brief C custom defined QSUB16
+   */
+  __STATIC_FORCEINLINE uint32_t __QSUB16(
+  uint32_t x,
+  uint32_t y)
+  {
+    q31_t r, s;
 
-  r = __SSAT(((((q31_t)x << 16) >> 16) + (((q31_t)y      ) >> 16)), 16) & (int32_t)0x0000FFFF;
-  s = __SSAT(((((q31_t)x      ) >> 16) - (((q31_t)y << 16) >> 16)), 16) & (int32_t)0x0000FFFF;
+    r = __SSAT(((((q31_t)x << 16) >> 16) - (((q31_t)y << 16) >> 16)), 16) & (int32_t)0x0000FFFF;
+    s = __SSAT(((((q31_t)x      ) >> 16) - (((q31_t)y      ) >> 16)), 16) & (int32_t)0x0000FFFF;
 
-  return ((uint32_t)((s << 16) | (r      )));
-}
-
-
-/*
-  * @brief C custom defined SHSAX
-  */
-__STATIC_FORCEINLINE uint32_t __SHSAX(
-uint32_t x,
-uint32_t y)
-{
-  q31_t r, s;
-
-  r = (((((q31_t)x << 16) >> 16) + (((q31_t)y      ) >> 16)) >> 1) & (int32_t)0x0000FFFF;
-  s = (((((q31_t)x      ) >> 16) - (((q31_t)y << 16) >> 16)) >> 1) & (int32_t)0x0000FFFF;
-
-  return ((uint32_t)((s << 16) | (r      )));
-}
+    return ((uint32_t)((s << 16) | (r      )));
+  }
 
 
-/*
-  * @brief C custom defined SMUSDX
-  */
-__STATIC_FORCEINLINE uint32_t __SMUSDX(
-uint32_t x,
-uint32_t y)
-{
-  return ((uint32_t)(((((q31_t)x << 16) >> 16) * (((q31_t)y      ) >> 16)) -
-                      ((((q31_t)x      ) >> 16) * (((q31_t)y << 16) >> 16))   ));
-}
+  /*
+   * @brief C custom defined SHSUB16
+   */
+  __STATIC_FORCEINLINE uint32_t __SHSUB16(
+  uint32_t x,
+  uint32_t y)
+  {
+    q31_t r, s;
 
-/*
-  * @brief C custom defined SMUADX
-  */
-__STATIC_FORCEINLINE uint32_t __SMUADX(
-uint32_t x,
-uint32_t y)
-{
-  return ((uint32_t)(((((q31_t)x << 16) >> 16) * (((q31_t)y      ) >> 16)) +
-                      ((((q31_t)x      ) >> 16) * (((q31_t)y << 16) >> 16))   ));
-}
+    r = (((((q31_t)x << 16) >> 16) - (((q31_t)y << 16) >> 16)) >> 1) & (int32_t)0x0000FFFF;
+    s = (((((q31_t)x      ) >> 16) - (((q31_t)y      ) >> 16)) >> 1) & (int32_t)0x0000FFFF;
+
+    return ((uint32_t)((s << 16) | (r      )));
+  }
 
 
-/*
-  * @brief C custom defined QADD
-  */
-__STATIC_FORCEINLINE int32_t __QADD(
-int32_t x,
-int32_t y)
-{
-  return ((int32_t)(clip_q63_to_q31((q63_t)x + (q31_t)y)));
-}
+  /*
+   * @brief C custom defined QASX
+   */
+  __STATIC_FORCEINLINE uint32_t __QASX(
+  uint32_t x,
+  uint32_t y)
+  {
+    q31_t r, s;
+
+    r = __SSAT(((((q31_t)x << 16) >> 16) - (((q31_t)y      ) >> 16)), 16) & (int32_t)0x0000FFFF;
+    s = __SSAT(((((q31_t)x      ) >> 16) + (((q31_t)y << 16) >> 16)), 16) & (int32_t)0x0000FFFF;
+
+    return ((uint32_t)((s << 16) | (r      )));
+  }
 
 
-/*
-  * @brief C custom defined QSUB
-  */
-__STATIC_FORCEINLINE int32_t __QSUB(
-int32_t x,
-int32_t y)
-{
-  return ((int32_t)(clip_q63_to_q31((q63_t)x - (q31_t)y)));
-}
+  /*
+   * @brief C custom defined SHASX
+   */
+  __STATIC_FORCEINLINE uint32_t __SHASX(
+  uint32_t x,
+  uint32_t y)
+  {
+    q31_t r, s;
+
+    r = (((((q31_t)x << 16) >> 16) - (((q31_t)y      ) >> 16)) >> 1) & (int32_t)0x0000FFFF;
+    s = (((((q31_t)x      ) >> 16) + (((q31_t)y << 16) >> 16)) >> 1) & (int32_t)0x0000FFFF;
+
+    return ((uint32_t)((s << 16) | (r      )));
+  }
 
 
-/*
-  * @brief C custom defined SMLAD
-  */
-__STATIC_FORCEINLINE uint32_t __SMLAD(
-uint32_t x,
-uint32_t y,
-uint32_t sum)
-{
-  return ((uint32_t)(((((q31_t)x << 16) >> 16) * (((q31_t)y << 16) >> 16)) +
-                      ((((q31_t)x      ) >> 16) * (((q31_t)y      ) >> 16)) +
-                      ( ((q31_t)sum    )                                  )   ));
-}
+  /*
+   * @brief C custom defined QSAX
+   */
+  __STATIC_FORCEINLINE uint32_t __QSAX(
+  uint32_t x,
+  uint32_t y)
+  {
+    q31_t r, s;
+
+    r = __SSAT(((((q31_t)x << 16) >> 16) + (((q31_t)y      ) >> 16)), 16) & (int32_t)0x0000FFFF;
+    s = __SSAT(((((q31_t)x      ) >> 16) - (((q31_t)y << 16) >> 16)), 16) & (int32_t)0x0000FFFF;
+
+    return ((uint32_t)((s << 16) | (r      )));
+  }
 
 
-/*
-  * @brief C custom defined SMLADX
-  */
-__STATIC_FORCEINLINE uint32_t __SMLADX(
-uint32_t x,
-uint32_t y,
-uint32_t sum)
-{
-  return ((uint32_t)(((((q31_t)x << 16) >> 16) * (((q31_t)y      ) >> 16)) +
-                      ((((q31_t)x      ) >> 16) * (((q31_t)y << 16) >> 16)) +
-                      ( ((q31_t)sum    )                                  )   ));
-}
+  /*
+   * @brief C custom defined SHSAX
+   */
+  __STATIC_FORCEINLINE uint32_t __SHSAX(
+  uint32_t x,
+  uint32_t y)
+  {
+    q31_t r, s;
+
+    r = (((((q31_t)x << 16) >> 16) + (((q31_t)y      ) >> 16)) >> 1) & (int32_t)0x0000FFFF;
+    s = (((((q31_t)x      ) >> 16) - (((q31_t)y << 16) >> 16)) >> 1) & (int32_t)0x0000FFFF;
+
+    return ((uint32_t)((s << 16) | (r      )));
+  }
 
 
-/*
-  * @brief C custom defined SMLSDX
-  */
-__STATIC_FORCEINLINE uint32_t __SMLSDX(
-uint32_t x,
-uint32_t y,
-uint32_t sum)
-{
-  return ((uint32_t)(((((q31_t)x << 16) >> 16) * (((q31_t)y      ) >> 16)) -
-                      ((((q31_t)x      ) >> 16) * (((q31_t)y << 16) >> 16)) +
-                      ( ((q31_t)sum    )                                  )   ));
-}
+  /*
+   * @brief C custom defined SMUSDX
+   */
+  __STATIC_FORCEINLINE uint32_t __SMUSDX(
+  uint32_t x,
+  uint32_t y)
+  {
+    return ((uint32_t)(((((q31_t)x << 16) >> 16) * (((q31_t)y      ) >> 16)) -
+                       ((((q31_t)x      ) >> 16) * (((q31_t)y << 16) >> 16))   ));
+  }
+
+  /*
+   * @brief C custom defined SMUADX
+   */
+  __STATIC_FORCEINLINE uint32_t __SMUADX(
+  uint32_t x,
+  uint32_t y)
+  {
+    return ((uint32_t)(((((q31_t)x << 16) >> 16) * (((q31_t)y      ) >> 16)) +
+                       ((((q31_t)x      ) >> 16) * (((q31_t)y << 16) >> 16))   ));
+  }
 
 
-/*
-  * @brief C custom defined SMLALD
-  */
-__STATIC_FORCEINLINE uint64_t __SMLALD(
-uint32_t x,
-uint32_t y,
-uint64_t sum)
-{
+  /*
+   * @brief C custom defined QADD
+   */
+  __STATIC_FORCEINLINE int32_t __QADD(
+  int32_t x,
+  int32_t y)
+  {
+    return ((int32_t)(clip_q63_to_q31((q63_t)x + (q31_t)y)));
+  }
+
+
+  /*
+   * @brief C custom defined QSUB
+   */
+  __STATIC_FORCEINLINE int32_t __QSUB(
+  int32_t x,
+  int32_t y)
+  {
+    return ((int32_t)(clip_q63_to_q31((q63_t)x - (q31_t)y)));
+  }
+
+
+  /*
+   * @brief C custom defined SMLAD
+   */
+  __STATIC_FORCEINLINE uint32_t __SMLAD(
+  uint32_t x,
+  uint32_t y,
+  uint32_t sum)
+  {
+    return ((uint32_t)(((((q31_t)x << 16) >> 16) * (((q31_t)y << 16) >> 16)) +
+                       ((((q31_t)x      ) >> 16) * (((q31_t)y      ) >> 16)) +
+                       ( ((q31_t)sum    )                                  )   ));
+  }
+
+
+  /*
+   * @brief C custom defined SMLADX
+   */
+  __STATIC_FORCEINLINE uint32_t __SMLADX(
+  uint32_t x,
+  uint32_t y,
+  uint32_t sum)
+  {
+    return ((uint32_t)(((((q31_t)x << 16) >> 16) * (((q31_t)y      ) >> 16)) +
+                       ((((q31_t)x      ) >> 16) * (((q31_t)y << 16) >> 16)) +
+                       ( ((q31_t)sum    )                                  )   ));
+  }
+
+
+  /*
+   * @brief C custom defined SMLSDX
+   */
+  __STATIC_FORCEINLINE uint32_t __SMLSDX(
+  uint32_t x,
+  uint32_t y,
+  uint32_t sum)
+  {
+    return ((uint32_t)(((((q31_t)x << 16) >> 16) * (((q31_t)y      ) >> 16)) -
+                       ((((q31_t)x      ) >> 16) * (((q31_t)y << 16) >> 16)) +
+                       ( ((q31_t)sum    )                                  )   ));
+  }
+
+
+  /*
+   * @brief C custom defined SMLALD
+   */
+  __STATIC_FORCEINLINE uint64_t __SMLALD(
+  uint32_t x,
+  uint32_t y,
+  uint64_t sum)
+  {
 /*  return (sum + ((q15_t) (x >> 16) * (q15_t) (y >> 16)) + ((q15_t) x * (q15_t) y)); */
-  return ((uint64_t)(((((q31_t)x << 16) >> 16) * (((q31_t)y << 16) >> 16)) +
-                      ((((q31_t)x      ) >> 16) * (((q31_t)y      ) >> 16)) +
-                      ( ((q63_t)sum    )                                  )   ));
-}
+    return ((uint64_t)(((((q31_t)x << 16) >> 16) * (((q31_t)y << 16) >> 16)) +
+                       ((((q31_t)x      ) >> 16) * (((q31_t)y      ) >> 16)) +
+                       ( ((q63_t)sum    )                                  )   ));
+  }
 
 
-/*
-  * @brief C custom defined SMLALDX
-  */
-__STATIC_FORCEINLINE uint64_t __SMLALDX(
-uint32_t x,
-uint32_t y,
-uint64_t sum)
-{
+  /*
+   * @brief C custom defined SMLALDX
+   */
+  __STATIC_FORCEINLINE uint64_t __SMLALDX(
+  uint32_t x,
+  uint32_t y,
+  uint64_t sum)
+  {
 /*  return (sum + ((q15_t) (x >> 16) * (q15_t) y)) + ((q15_t) x * (q15_t) (y >> 16)); */
-  return ((uint64_t)(((((q31_t)x << 16) >> 16) * (((q31_t)y      ) >> 16)) +
-                      ((((q31_t)x      ) >> 16) * (((q31_t)y << 16) >> 16)) +
-                      ( ((q63_t)sum    )                                  )   ));
-}
+    return ((uint64_t)(((((q31_t)x << 16) >> 16) * (((q31_t)y      ) >> 16)) +
+                       ((((q31_t)x      ) >> 16) * (((q31_t)y << 16) >> 16)) +
+                       ( ((q63_t)sum    )                                  )   ));
+  }
 
 
-/*
-  * @brief C custom defined SMUAD
-  */
-__STATIC_FORCEINLINE uint32_t __SMUAD(
-uint32_t x,
-uint32_t y)
-{
-  return ((uint32_t)(((((q31_t)x << 16) >> 16) * (((q31_t)y << 16) >> 16)) +
-                      ((((q31_t)x      ) >> 16) * (((q31_t)y      ) >> 16))   ));
-}
+  /*
+   * @brief C custom defined SMUAD
+   */
+  __STATIC_FORCEINLINE uint32_t __SMUAD(
+  uint32_t x,
+  uint32_t y)
+  {
+    return ((uint32_t)(((((q31_t)x << 16) >> 16) * (((q31_t)y << 16) >> 16)) +
+                       ((((q31_t)x      ) >> 16) * (((q31_t)y      ) >> 16))   ));
+  }
 
 
-/*
-  * @brief C custom defined SMUSD
-  */
-__STATIC_FORCEINLINE uint32_t __SMUSD(
-uint32_t x,
-uint32_t y)
-{
-  return ((uint32_t)(((((q31_t)x << 16) >> 16) * (((q31_t)y << 16) >> 16)) -
-                      ((((q31_t)x      ) >> 16) * (((q31_t)y      ) >> 16))   ));
-}
+  /*
+   * @brief C custom defined SMUSD
+   */
+  __STATIC_FORCEINLINE uint32_t __SMUSD(
+  uint32_t x,
+  uint32_t y)
+  {
+    return ((uint32_t)(((((q31_t)x << 16) >> 16) * (((q31_t)y << 16) >> 16)) -
+                       ((((q31_t)x      ) >> 16) * (((q31_t)y      ) >> 16))   ));
+  }
 
 
-/*
-  * @brief C custom defined SXTB16
-  */
-__STATIC_FORCEINLINE uint32_t __SXTB16(
-uint32_t x)
-{
-  return ((uint32_t)(((((q31_t)x << 24) >> 24) & (q31_t)0x0000FFFF) |
-                      ((((q31_t)x <<  8) >>  8) & (q31_t)0xFFFF0000)  ));
-}
+  /*
+   * @brief C custom defined SXTB16
+   */
+  __STATIC_FORCEINLINE uint32_t __SXTB16(
+  uint32_t x)
+  {
+    return ((uint32_t)(((((q31_t)x << 24) >> 24) & (q31_t)0x0000FFFF) |
+                       ((((q31_t)x <<  8) >>  8) & (q31_t)0xFFFF0000)  ));
+  }
 
-/*
-  * @brief C custom defined SMMLA
-  */
-__STATIC_FORCEINLINE int32_t __SMMLA(
-int32_t x,
-int32_t y,
-int32_t sum)
-{
-  return (sum + (int32_t) (((int64_t) x * y) >> 32));
-}
+  /*
+   * @brief C custom defined SMMLA
+   */
+  __STATIC_FORCEINLINE int32_t __SMMLA(
+  int32_t x,
+  int32_t y,
+  int32_t sum)
+  {
+    return (sum + (int32_t) (((int64_t) x * y) >> 32));
+  }
 
 
 #ifdef   __cplusplus

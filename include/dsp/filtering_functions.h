@@ -1,14 +1,5 @@
 /******************************************************************************
  * @file     filtering_functions.h
- * @brief    Public header file for Embench DSP Library
- ******************************************************************************/
-/*
- * Modified from Arm CMSIS DSP Libray (see Apache license below)
- */
-
-
-/******************************************************************************
- * @file     filtering_functions.h
  * @brief    Public header file for CMSIS DSP Library
  * @version  V1.10.0
  * @date     08 July 2021
@@ -33,17 +24,17 @@
  */
 
  
-#ifndef _FILTERING_FUNCTIONS_H_
-#define _FILTERING_FUNCTIONS_H_
+#ifndef FILTERING_FUNCTIONS_H_
+#define FILTERING_FUNCTIONS_H_
 
-#include "embench_math_types.h"
+#include "arm_math_types.h"
 // #include "arm_math_memory.h"
 
 #include "dsp/none.h"
-// #include "dsp/utils.h"
+#include "dsp/utils.h"
 
 #include "dsp/support_functions.h"
-// #include "dsp/fast_math_functions.h"
+#include "dsp/fast_math_functions.h"
 
 #ifdef   __cplusplus
 extern "C"
@@ -67,7 +58,7 @@ extern "C"
           uint16_t numTaps;        /**< number of filter coefficients in the filter. */
           q7_t *pState;            /**< points to the state variable array. The array is of length numTaps+blockSize-1. */
     const q7_t *pCoeffs;           /**< points to the coefficient array. The array is of length numTaps.*/
-  } embench_fir_instance_q7;
+  } arm_fir_instance_q7;
 
   /**
    * @brief Instance structure for the Q15 FIR filter.
@@ -77,7 +68,7 @@ extern "C"
           uint16_t numTaps;         /**< number of filter coefficients in the filter. */
           q15_t *pState;            /**< points to the state variable array. The array is of length numTaps+blockSize-1. */
     const q15_t *pCoeffs;           /**< points to the coefficient array. The array is of length numTaps.*/
-  } embench_fir_instance_q15;
+  } arm_fir_instance_q15;
 
   /**
    * @brief Instance structure for the Q31 FIR filter.
@@ -87,7 +78,7 @@ extern "C"
           uint16_t numTaps;         /**< number of filter coefficients in the filter. */
           q31_t *pState;            /**< points to the state variable array. The array is of length numTaps+blockSize-1. */
     const q31_t *pCoeffs;           /**< points to the coefficient array. The array is of length numTaps. */
-  } embench_fir_instance_q31;
+  } arm_fir_instance_q31;
 
   /**
    * @brief Instance structure for the floating-point FIR filter.
@@ -97,7 +88,7 @@ extern "C"
           uint16_t numTaps;     /**< number of filter coefficients in the filter. */
           float32_t *pState;    /**< points to the state variable array. The array is of length numTaps+blockSize-1. */
     const float32_t *pCoeffs;   /**< points to the coefficient array. The array is of length numTaps. */
-  } embench_fir_instance_f32;
+  } arm_fir_instance_f32;
 
   /**
    * @brief Instance structure for the floating-point FIR filter.
@@ -107,7 +98,7 @@ extern "C"
           uint16_t numTaps;     /**< number of filter coefficients in the filter. */
           float64_t *pState;    /**< points to the state variable array. The array is of length numTaps+blockSize-1. */
     const float64_t *pCoeffs;   /**< points to the coefficient array. The array is of length numTaps. */
-  } embench_fir_instance_f64;
+  } arm_fir_instance_f64;
 
   /**
    * @brief Processing function for the Q7 FIR filter.
@@ -116,8 +107,8 @@ extern "C"
    * @param[out] pDst       points to the block of output data.
    * @param[in]  blockSize  number of samples to process.
    */
-  void embench_fir_q7(
-  const embench_fir_instance_q7 * S,
+  void arm_fir_q7(
+  const arm_fir_instance_q7 * S,
   const q7_t * pSrc,
         q7_t * pDst,
         uint32_t blockSize);
@@ -129,12 +120,9 @@ extern "C"
    * @param[in]     pCoeffs    points to the filter coefficients.
    * @param[in]     pState     points to the state buffer.
    * @param[in]     blockSize  number of samples that are processed.
-   *
-   * For the MVE version, the coefficient length must be a multiple of 16.
-   * You can pad with zeros if you have less coefficients.
    */
-  void embench_fir_init_q7(
-        embench_fir_instance_q7 * S,
+  void arm_fir_init_q7(
+        arm_fir_instance_q7 * S,
         uint16_t numTaps,
   const q7_t * pCoeffs,
         q7_t * pState,
@@ -147,8 +135,8 @@ extern "C"
    * @param[out] pDst       points to the block of output data.
    * @param[in]  blockSize  number of samples to process.
    */
-  void embench_fir_q15(
-  const embench_fir_instance_q15 * S,
+  void arm_fir_q15(
+  const arm_fir_instance_q15 * S,
   const q15_t * pSrc,
         q15_t * pDst,
         uint32_t blockSize);
@@ -160,8 +148,8 @@ extern "C"
    * @param[out] pDst       points to the block of output data.
    * @param[in]  blockSize  number of samples to process.
    */
-  void embench_fir_fast_q15(
-  const embench_fir_instance_q15 * S,
+  void arm_fir_fast_q15(
+  const arm_fir_instance_q15 * S,
   const q15_t * pSrc,
         q15_t * pDst,
         uint32_t blockSize);
@@ -174,15 +162,12 @@ extern "C"
    * @param[in]     pState     points to the state buffer.
    * @param[in]     blockSize  number of samples that are processed at a time.
    * @return     The function returns either
-   * <code>EMBENCH_MATH_SUCCESS</code> if initialization was successful or
-   * <code>EMBENCH_MATH_ARGUMENT_ERROR</code> if <code>numTaps</code> is not a supported value.
-   *
-   * For the MVE version, the coefficient length must be a multiple of 8.
-   * You can pad with zeros if you have less coefficients.
+   * <code>ARM_MATH_SUCCESS</code> if initialization was successful or
+   * <code>ARM_MATH_ARGUMENT_ERROR</code> if <code>numTaps</code> is not a supported value.
    *
    */
-  embench_status fir_init_q15(
-        embench_fir_instance_q15 * S,
+  arm_status arm_fir_init_q15(
+        arm_fir_instance_q15 * S,
         uint16_t numTaps,
   const q15_t * pCoeffs,
         q15_t * pState,
@@ -195,8 +180,8 @@ extern "C"
    * @param[out] pDst       points to the block of output data.
    * @param[in]  blockSize  number of samples to process.
    */
-  void embench_fir_q31(
-  const embench_fir_instance_q31 * S,
+  void arm_fir_q31(
+  const arm_fir_instance_q31 * S,
   const q31_t * pSrc,
         q31_t * pDst,
         uint32_t blockSize);
@@ -208,8 +193,8 @@ extern "C"
    * @param[out] pDst       points to the block of output data.
    * @param[in]  blockSize  number of samples to process.
    */
-  void embench_fir_fast_q31(
-  const embench_fir_instance_q31 * S,
+  void arm_fir_fast_q31(
+  const arm_fir_instance_q31 * S,
   const q31_t * pSrc,
         q31_t * pDst,
         uint32_t blockSize);
@@ -221,12 +206,9 @@ extern "C"
    * @param[in]     pCoeffs    points to the filter coefficients.
    * @param[in]     pState     points to the state buffer.
    * @param[in]     blockSize  number of samples that are processed at a time.
-   *
-   * For the MVE version, the coefficient length must be a multiple of 4.
-   * You can pad with zeros if you have less coefficients.
    */
-  void embench_fir_init_q31(
-        embench_fir_instance_q31 * S,
+  void arm_fir_init_q31(
+        arm_fir_instance_q31 * S,
         uint16_t numTaps,
   const q31_t * pCoeffs,
         q31_t * pState,
@@ -239,8 +221,8 @@ extern "C"
    * @param[out] pDst       points to the block of output data.
    * @param[in]  blockSize  number of samples to process.
    */
-  void embench_fir_f32(
-  const embench_fir_instance_f32 * S,
+  void arm_fir_f32(
+  const arm_fir_instance_f32 * S,
   const float32_t * pSrc,
         float32_t * pDst,
         uint32_t blockSize);
@@ -252,8 +234,8 @@ extern "C"
    * @param[out] pDst       points to the block of output data.
    * @param[in]  blockSize  number of samples to process.
    */
-  void embench_fir_f64(
-  const embench_fir_instance_f64 * S,
+  void arm_fir_f64(
+  const arm_fir_instance_f64 * S,
   const float64_t * pSrc,
         float64_t * pDst,
         uint32_t blockSize);
@@ -266,8 +248,8 @@ extern "C"
    * @param[in]     pState     points to the state buffer.
    * @param[in]     blockSize  number of samples that are processed at a time.
    */
-  void embench_fir_init_f32(
-        embench_fir_instance_f32 * S,
+  void arm_fir_init_f32(
+        arm_fir_instance_f32 * S,
         uint16_t numTaps,
   const float32_t * pCoeffs,
         float32_t * pState,
@@ -281,8 +263,8 @@ extern "C"
    * @param[in]     pState     points to the state buffer.
    * @param[in]     blockSize  number of samples that are processed at a time.
    */
-  void embench_fir_init_f64(
-        embench_fir_instance_f64 * S,
+  void arm_fir_init_f64(
+        arm_fir_instance_f64 * S,
         uint16_t numTaps,
   const float64_t * pCoeffs,
         float64_t * pState,
@@ -297,7 +279,7 @@ extern "C"
           q15_t *pState;           /**< Points to the array of state coefficients.  The array is of length 4*numStages. */
     const q15_t *pCoeffs;          /**< Points to the array of coefficients.  The array is of length 5*numStages. */
           int8_t postShift;        /**< Additional shift, in bits, applied to each output sample. */
-  } embench_biquad_casd_df1_inst_q15;
+  } arm_biquad_casd_df1_inst_q15;
 
   /**
    * @brief Instance structure for the Q31 Biquad cascade filter.
@@ -308,7 +290,7 @@ extern "C"
           q31_t *pState;           /**< Points to the array of state coefficients.  The array is of length 4*numStages. */
     const q31_t *pCoeffs;          /**< Points to the array of coefficients.  The array is of length 5*numStages. */
           uint8_t postShift;       /**< Additional shift, in bits, applied to each output sample. */
-  } embench_biquad_casd_df1_inst_q31;
+  } arm_biquad_casd_df1_inst_q31;
 
   /**
    * @brief Instance structure for the floating-point Biquad cascade filter.
@@ -318,7 +300,7 @@ extern "C"
           uint32_t numStages;      /**< number of 2nd order stages in the filter.  Overall order is 2*numStages. */
           float32_t *pState;       /**< Points to the array of state coefficients.  The array is of length 4*numStages. */
     const float32_t *pCoeffs;      /**< Points to the array of coefficients.  The array is of length 5*numStages. */
-  } embench_biquad_casd_df1_inst_f32;
+  } arm_biquad_casd_df1_inst_f32;
 
   /**
    * @brief Processing function for the Q15 Biquad cascade filter.
@@ -327,8 +309,8 @@ extern "C"
    * @param[out] pDst       points to the block of output data.
    * @param[in]  blockSize  number of samples to process.
    */
-  void embench_biquad_cascade_df1_q15(
-  const embench_biquad_casd_df1_inst_q15 * S,
+  void arm_biquad_cascade_df1_q15(
+  const arm_biquad_casd_df1_inst_q15 * S,
   const q15_t * pSrc,
         q15_t * pDst,
         uint32_t blockSize);
@@ -341,8 +323,8 @@ extern "C"
    * @param[in]     pState     points to the state buffer.
    * @param[in]     postShift  Shift to be applied to the output. Varies according to the coefficients format
    */
-  void embench_biquad_cascade_df1_init_q15(
-        embench_biquad_casd_df1_inst_q15 * S,
+  void arm_biquad_cascade_df1_init_q15(
+        arm_biquad_casd_df1_inst_q15 * S,
         uint8_t numStages,
   const q15_t * pCoeffs,
         q15_t * pState,
@@ -355,8 +337,8 @@ extern "C"
    * @param[out] pDst       points to the block of output data.
    * @param[in]  blockSize  number of samples to process.
    */
-  void embench_biquad_cascade_df1_fast_q15(
-  const embench_biquad_casd_df1_inst_q15 * S,
+  void arm_biquad_cascade_df1_fast_q15(
+  const arm_biquad_casd_df1_inst_q15 * S,
   const q15_t * pSrc,
         q15_t * pDst,
         uint32_t blockSize);
@@ -368,8 +350,8 @@ extern "C"
    * @param[out] pDst       points to the block of output data.
    * @param[in]  blockSize  number of samples to process.
    */
-  void embench_biquad_cascade_df1_q31(
-  const embench_biquad_casd_df1_inst_q31 * S,
+  void arm_biquad_cascade_df1_q31(
+  const arm_biquad_casd_df1_inst_q31 * S,
   const q31_t * pSrc,
         q31_t * pDst,
         uint32_t blockSize);
@@ -381,8 +363,8 @@ extern "C"
    * @param[out] pDst       points to the block of output data.
    * @param[in]  blockSize  number of samples to process.
    */
-  void embench_biquad_cascade_df1_fast_q31(
-  const embench_biquad_casd_df1_inst_q31 * S,
+  void arm_biquad_cascade_df1_fast_q31(
+  const arm_biquad_casd_df1_inst_q31 * S,
   const q31_t * pSrc,
         q31_t * pDst,
         uint32_t blockSize);
@@ -395,8 +377,8 @@ extern "C"
    * @param[in]     pState     points to the state buffer.
    * @param[in]     postShift  Shift to be applied to the output. Varies according to the coefficients format
    */
-  void embench_biquad_cascade_df1_init_q31(
-        embench_biquad_casd_df1_inst_q31 * S,
+  void arm_biquad_cascade_df1_init_q31(
+        arm_biquad_casd_df1_inst_q31 * S,
         uint8_t numStages,
   const q31_t * pCoeffs,
         q31_t * pState,
@@ -409,14 +391,22 @@ extern "C"
    * @param[out] pDst       points to the block of output data.
    * @param[in]  blockSize  number of samples to process.
    */
-  void embench_biquad_cascade_df1_f32(
-  const embench_biquad_casd_df1_inst_f32 * S,
+  void arm_biquad_cascade_df1_f32(
+  const arm_biquad_casd_df1_inst_f32 * S,
   const float32_t * pSrc,
         float32_t * pDst,
         uint32_t blockSize);
+
+  /**
+   * @brief  Initialization function for the floating-point Biquad cascade filter.
+   * @param[in,out] S          points to an instance of the floating-point Biquad cascade structure.
+   * @param[in]     numStages  number of 2nd order stages in the filter.
+   * @param[in]     pCoeffs    points to the filter coefficients.
+   * @param[in]     pState     points to the state buffer.
+   */
   
-  void embench_biquad_cascade_df1_init_f32(
-        embench_biquad_casd_df1_inst_f32 * S,
+  void arm_biquad_cascade_df1_init_f32(
+        arm_biquad_casd_df1_inst_f32 * S,
         uint8_t numStages,
   const float32_t * pCoeffs,
         float32_t * pState);
@@ -430,7 +420,7 @@ extern "C"
  * @param[in]  srcBLen  length of the second input sequence.
  * @param[out] pDst     points to the location where the output result is written.  Length srcALen+srcBLen-1.
  */
-  void embench_conv_f32(
+  void arm_conv_f32(
   const float32_t * pSrcA,
         uint32_t srcALen,
   const float32_t * pSrcB,
@@ -448,7 +438,7 @@ extern "C"
    * @param[in]  pScratch1  points to scratch buffer of size max(srcALen, srcBLen) + 2*min(srcALen, srcBLen) - 2.
    * @param[in]  pScratch2  points to scratch buffer of size min(srcALen, srcBLen).
    */
-  void embench_conv_opt_q15(
+  void arm_conv_opt_q15(
   const q15_t * pSrcA,
         uint32_t srcALen,
   const q15_t * pSrcB,
@@ -466,7 +456,7 @@ extern "C"
  * @param[in]  srcBLen  length of the second input sequence.
  * @param[out] pDst     points to the location where the output result is written.  Length srcALen+srcBLen-1.
  */
-  void embench_conv_q15(
+  void arm_conv_q15(
   const q15_t * pSrcA,
         uint32_t srcALen,
   const q15_t * pSrcB,
@@ -482,7 +472,7 @@ extern "C"
    * @param[in]  srcBLen  length of the second input sequence.
    * @param[out] pDst     points to the block of output data  Length srcALen+srcBLen-1.
    */
-  void embench_conv_fast_q15(
+  void arm_conv_fast_q15(
   const q15_t * pSrcA,
         uint32_t srcALen,
   const q15_t * pSrcB,
@@ -500,7 +490,7 @@ extern "C"
    * @param[in]  pScratch1  points to scratch buffer of size max(srcALen, srcBLen) + 2*min(srcALen, srcBLen) - 2.
    * @param[in]  pScratch2  points to scratch buffer of size min(srcALen, srcBLen).
    */
-  void embench_conv_fast_opt_q15(
+  void arm_conv_fast_opt_q15(
   const q15_t * pSrcA,
         uint32_t srcALen,
   const q15_t * pSrcB,
@@ -518,7 +508,7 @@ extern "C"
    * @param[in]  srcBLen  length of the second input sequence.
    * @param[out] pDst     points to the block of output data  Length srcALen+srcBLen-1.
    */
-  void embench_conv_q31(
+  void arm_conv_q31(
   const q31_t * pSrcA,
         uint32_t srcALen,
   const q31_t * pSrcB,
@@ -534,7 +524,7 @@ extern "C"
    * @param[in]  srcBLen  length of the second input sequence.
    * @param[out] pDst     points to the block of output data  Length srcALen+srcBLen-1.
    */
-  void embench_conv_fast_q31(
+  void arm_conv_fast_q31(
   const q31_t * pSrcA,
         uint32_t srcALen,
   const q31_t * pSrcB,
@@ -552,7 +542,7 @@ extern "C"
    * @param[in]  pScratch1  points to scratch buffer(of type q15_t) of size max(srcALen, srcBLen) + 2*min(srcALen, srcBLen) - 2.
    * @param[in]  pScratch2  points to scratch buffer (of type q15_t) of size min(srcALen, srcBLen).
    */
-  void embench_conv_opt_q7(
+  void arm_conv_opt_q7(
   const q7_t * pSrcA,
         uint32_t srcALen,
   const q7_t * pSrcB,
@@ -570,7 +560,7 @@ extern "C"
    * @param[in]  srcBLen  length of the second input sequence.
    * @param[out] pDst     points to the block of output data  Length srcALen+srcBLen-1.
    */
-  void embench_conv_q7(
+  void arm_conv_q7(
   const q7_t * pSrcA,
         uint32_t srcALen,
   const q7_t * pSrcB,
@@ -587,9 +577,9 @@ extern "C"
    * @param[out] pDst        points to the block of output data
    * @param[in]  firstIndex  is the first output sample to start with.
    * @param[in]  numPoints   is the number of output points to be computed.
-   * @return  Returns either EMBENCH_MATH_SUCCESS if the function completed correctly or EMBENCH_MATH_ARGUMENT_ERROR if the requested subset is not in the range [0 srcALen+srcBLen-2].
+   * @return  Returns either ARM_MATH_SUCCESS if the function completed correctly or ARM_MATH_ARGUMENT_ERROR if the requested subset is not in the range [0 srcALen+srcBLen-2].
    */
-  embench_status conv_partial_f32(
+  arm_status arm_conv_partial_f32(
   const float32_t * pSrcA,
         uint32_t srcALen,
   const float32_t * pSrcB,
@@ -610,9 +600,9 @@ extern "C"
    * @param[in]  numPoints   is the number of output points to be computed.
    * @param[in]  pScratch1   points to scratch buffer of size max(srcALen, srcBLen) + 2*min(srcALen, srcBLen) - 2.
    * @param[in]  pScratch2   points to scratch buffer of size min(srcALen, srcBLen).
-   * @return  Returns either EMBENCH_MATH_SUCCESS if the function completed correctly or EMBENCH_MATH_ARGUMENT_ERROR if the requested subset is not in the range [0 srcALen+srcBLen-2].
+   * @return  Returns either ARM_MATH_SUCCESS if the function completed correctly or ARM_MATH_ARGUMENT_ERROR if the requested subset is not in the range [0 srcALen+srcBLen-2].
    */
-  embench_status conv_partial_opt_q15(
+  arm_status arm_conv_partial_opt_q15(
   const q15_t * pSrcA,
         uint32_t srcALen,
   const q15_t * pSrcB,
@@ -633,9 +623,9 @@ extern "C"
    * @param[out] pDst        points to the block of output data
    * @param[in]  firstIndex  is the first output sample to start with.
    * @param[in]  numPoints   is the number of output points to be computed.
-   * @return  Returns either EMBENCH_MATH_SUCCESS if the function completed correctly or EMBENCH_MATH_ARGUMENT_ERROR if the requested subset is not in the range [0 srcALen+srcBLen-2].
+   * @return  Returns either ARM_MATH_SUCCESS if the function completed correctly or ARM_MATH_ARGUMENT_ERROR if the requested subset is not in the range [0 srcALen+srcBLen-2].
    */
-  embench_status conv_partial_q15(
+  arm_status arm_conv_partial_q15(
   const q15_t * pSrcA,
         uint32_t srcALen,
   const q15_t * pSrcB,
@@ -654,9 +644,9 @@ extern "C"
    * @param[out] pDst        points to the block of output data
    * @param[in]  firstIndex  is the first output sample to start with.
    * @param[in]  numPoints   is the number of output points to be computed.
-   * @return  Returns either EMBENCH_MATH_SUCCESS if the function completed correctly or EMBENCH_MATH_ARGUMENT_ERROR if the requested subset is not in the range [0 srcALen+srcBLen-2].
+   * @return  Returns either ARM_MATH_SUCCESS if the function completed correctly or ARM_MATH_ARGUMENT_ERROR if the requested subset is not in the range [0 srcALen+srcBLen-2].
    */
-  embench_status conv_partial_fast_q15(
+  arm_status arm_conv_partial_fast_q15(
   const q15_t * pSrcA,
         uint32_t srcALen,
   const q15_t * pSrcB,
@@ -677,9 +667,9 @@ extern "C"
    * @param[in]  numPoints   is the number of output points to be computed.
    * @param[in]  pScratch1   points to scratch buffer of size max(srcALen, srcBLen) + 2*min(srcALen, srcBLen) - 2.
    * @param[in]  pScratch2   points to scratch buffer of size min(srcALen, srcBLen).
-   * @return  Returns either EMBENCH_MATH_SUCCESS if the function completed correctly or EMBENCH_MATH_ARGUMENT_ERROR if the requested subset is not in the range [0 srcALen+srcBLen-2].
+   * @return  Returns either ARM_MATH_SUCCESS if the function completed correctly or ARM_MATH_ARGUMENT_ERROR if the requested subset is not in the range [0 srcALen+srcBLen-2].
    */
-  embench_status conv_partial_fast_opt_q15(
+  arm_status arm_conv_partial_fast_opt_q15(
   const q15_t * pSrcA,
         uint32_t srcALen,
   const q15_t * pSrcB,
@@ -700,9 +690,9 @@ extern "C"
    * @param[out] pDst        points to the block of output data
    * @param[in]  firstIndex  is the first output sample to start with.
    * @param[in]  numPoints   is the number of output points to be computed.
-   * @return  Returns either EMBENCH_MATH_SUCCESS if the function completed correctly or EMBENCH_MATH_ARGUMENT_ERROR if the requested subset is not in the range [0 srcALen+srcBLen-2].
+   * @return  Returns either ARM_MATH_SUCCESS if the function completed correctly or ARM_MATH_ARGUMENT_ERROR if the requested subset is not in the range [0 srcALen+srcBLen-2].
    */
-  embench_status conv_partial_q31(
+  arm_status arm_conv_partial_q31(
   const q31_t * pSrcA,
         uint32_t srcALen,
   const q31_t * pSrcB,
@@ -721,9 +711,9 @@ extern "C"
    * @param[out] pDst        points to the block of output data
    * @param[in]  firstIndex  is the first output sample to start with.
    * @param[in]  numPoints   is the number of output points to be computed.
-   * @return  Returns either EMBENCH_MATH_SUCCESS if the function completed correctly or EMBENCH_MATH_ARGUMENT_ERROR if the requested subset is not in the range [0 srcALen+srcBLen-2].
+   * @return  Returns either ARM_MATH_SUCCESS if the function completed correctly or ARM_MATH_ARGUMENT_ERROR if the requested subset is not in the range [0 srcALen+srcBLen-2].
    */
-  embench_status conv_partial_fast_q31(
+  arm_status arm_conv_partial_fast_q31(
   const q31_t * pSrcA,
         uint32_t srcALen,
   const q31_t * pSrcB,
@@ -744,9 +734,9 @@ extern "C"
    * @param[in]  numPoints   is the number of output points to be computed.
    * @param[in]  pScratch1   points to scratch buffer(of type q15_t) of size max(srcALen, srcBLen) + 2*min(srcALen, srcBLen) - 2.
    * @param[in]  pScratch2   points to scratch buffer (of type q15_t) of size min(srcALen, srcBLen).
-   * @return  Returns either EMBENCH_MATH_SUCCESS if the function completed correctly or EMBENCH_MATH_ARGUMENT_ERROR if the requested subset is not in the range [0 srcALen+srcBLen-2].
+   * @return  Returns either ARM_MATH_SUCCESS if the function completed correctly or ARM_MATH_ARGUMENT_ERROR if the requested subset is not in the range [0 srcALen+srcBLen-2].
    */
-  embench_status conv_partial_opt_q7(
+  arm_status arm_conv_partial_opt_q7(
   const q7_t * pSrcA,
         uint32_t srcALen,
   const q7_t * pSrcB,
@@ -767,9 +757,9 @@ extern "C"
    * @param[out] pDst        points to the block of output data
    * @param[in]  firstIndex  is the first output sample to start with.
    * @param[in]  numPoints   is the number of output points to be computed.
-   * @return  Returns either EMBENCH_MATH_SUCCESS if the function completed correctly or EMBENCH_MATH_ARGUMENT_ERROR if the requested subset is not in the range [0 srcALen+srcBLen-2].
+   * @return  Returns either ARM_MATH_SUCCESS if the function completed correctly or ARM_MATH_ARGUMENT_ERROR if the requested subset is not in the range [0 srcALen+srcBLen-2].
    */
-  embench_status conv_partial_q7(
+  arm_status arm_conv_partial_q7(
   const q7_t * pSrcA,
         uint32_t srcALen,
   const q7_t * pSrcB,
@@ -788,7 +778,7 @@ extern "C"
           uint16_t numTaps;           /**< number of coefficients in the filter. */
     const q15_t *pCoeffs;             /**< points to the coefficient array. The array is of length numTaps.*/
           q15_t *pState;              /**< points to the state variable array. The array is of length numTaps+blockSize-1. */
-  } embench_fir_decimate_instance_q15;
+  } arm_fir_decimate_instance_q15;
 
   /**
    * @brief Instance structure for the Q31 FIR decimator.
@@ -799,10 +789,10 @@ extern "C"
           uint16_t numTaps;           /**< number of coefficients in the filter. */
     const q31_t *pCoeffs;             /**< points to the coefficient array. The array is of length numTaps.*/
           q31_t *pState;              /**< points to the state variable array. The array is of length numTaps+blockSize-1. */
-  } embench_fir_decimate_instance_q31;
+  } arm_fir_decimate_instance_q31;
 
 /**
-  @brief Instance structure for floating-point FIR decimator.
+  @brief Instance structure for single precision floating-point FIR decimator.
  */
 typedef struct
   {
@@ -810,18 +800,63 @@ typedef struct
           uint16_t numTaps;           /**< number of coefficients in the filter. */
     const float32_t *pCoeffs;         /**< points to the coefficient array. The array is of length numTaps.*/
           float32_t *pState;          /**< points to the state variable array. The array is of length numTaps+blockSize-1. */
-  } embench_fir_decimate_instance_f32;
+  } arm_fir_decimate_instance_f32;
 
+  /**
+  @brief Instance structure for double precision floating-point FIR decimator.
+ */
+  typedef struct
+  {
+    uint8_t M;                  /**< decimation factor. */
+    uint16_t numTaps;           /**< number of coefficients in the filter. */
+    const float64_t *pCoeffs;         /**< points to the coefficient array. The array is of length numTaps.*/
+    float64_t *pState;          /**< points to the state variable array. The array is of length numTaps+blockSize-1. */
+  } arm_fir_decimate_instance_f64;
 
-/**
+  /**
   @brief         Processing function for floating-point FIR decimator.
   @param[in]     S         points to an instance of the floating-point FIR decimator structure
   @param[in]     pSrc      points to the block of input data
   @param[out]    pDst      points to the block of output data
   @param[in]     blockSize number of samples to process
  */
-void embench_fir_decimate_f32(
-  const embench_fir_decimate_instance_f32 * S,
+  void arm_fir_decimate_f64(
+      const arm_fir_decimate_instance_f64 * S,
+      const float64_t * pSrc,
+      float64_t * pDst,
+      uint32_t blockSize);
+
+
+  /**
+    @brief         Initialization function for the floating-point FIR decimator.
+    @param[in,out] S          points to an instance of the floating-point FIR decimator structure
+    @param[in]     numTaps    number of coefficients in the filter
+    @param[in]     M          decimation factor
+    @param[in]     pCoeffs    points to the filter coefficients
+    @param[in]     pState     points to the state buffer
+    @param[in]     blockSize  number of input samples to process per call
+    @return        execution status
+                     - \ref ARM_MATH_SUCCESS      : Operation successful
+                     - \ref ARM_MATH_LENGTH_ERROR : <code>blockSize</code> is not a multiple of <code>M</code>
+   */
+  arm_status arm_fir_decimate_init_f64(
+      arm_fir_decimate_instance_f64 * S,
+      uint16_t numTaps,
+      uint8_t M,
+      const float64_t * pCoeffs,
+      float64_t * pState,
+      uint32_t blockSize);
+
+
+  /**
+  @brief         Processing function for floating-point FIR decimator.
+  @param[in]     S         points to an instance of the floating-point FIR decimator structure
+  @param[in]     pSrc      points to the block of input data
+  @param[out]    pDst      points to the block of output data
+  @param[in]     blockSize number of samples to process
+ */
+void arm_fir_decimate_f32(
+  const arm_fir_decimate_instance_f32 * S,
   const float32_t * pSrc,
         float32_t * pDst,
         uint32_t blockSize);
@@ -836,11 +871,11 @@ void embench_fir_decimate_f32(
   @param[in]     pState     points to the state buffer
   @param[in]     blockSize  number of input samples to process per call
   @return        execution status
-                   - \ref EMBENCH_MATH_SUCCESS      : Operation successful
-                   - \ref EMBENCH_MATH_LENGTH_ERROR : <code>blockSize</code> is not a multiple of <code>M</code>
+                   - \ref ARM_MATH_SUCCESS      : Operation successful
+                   - \ref ARM_MATH_LENGTH_ERROR : <code>blockSize</code> is not a multiple of <code>M</code>
  */
-embench_status fir_decimate_init_f32(
-        embench_fir_decimate_instance_f32 * S,
+arm_status arm_fir_decimate_init_f32(
+        arm_fir_decimate_instance_f32 * S,
         uint16_t numTaps,
         uint8_t M,
   const float32_t * pCoeffs,
@@ -855,8 +890,8 @@ embench_status fir_decimate_init_f32(
    * @param[out] pDst       points to the block of output data
    * @param[in]  blockSize  number of input samples to process per call.
    */
-  void embench_fir_decimate_q15(
-  const embench_fir_decimate_instance_q15 * S,
+  void arm_fir_decimate_q15(
+  const arm_fir_decimate_instance_q15 * S,
   const q15_t * pSrc,
         q15_t * pDst,
         uint32_t blockSize);
@@ -869,8 +904,8 @@ embench_status fir_decimate_init_f32(
    * @param[out] pDst       points to the block of output data
    * @param[in]  blockSize  number of input samples to process per call.
    */
-  void embench_fir_decimate_fast_q15(
-  const embench_fir_decimate_instance_q15 * S,
+  void arm_fir_decimate_fast_q15(
+  const arm_fir_decimate_instance_q15 * S,
   const q15_t * pSrc,
         q15_t * pDst,
         uint32_t blockSize);
@@ -884,11 +919,11 @@ embench_status fir_decimate_init_f32(
    * @param[in]     pCoeffs    points to the filter coefficients.
    * @param[in]     pState     points to the state buffer.
    * @param[in]     blockSize  number of input samples to process per call.
-   * @return    The function returns EMBENCH_MATH_SUCCESS if initialization is successful or EMBENCH_MATH_LENGTH_ERROR if
+   * @return    The function returns ARM_MATH_SUCCESS if initialization is successful or ARM_MATH_LENGTH_ERROR if
    * <code>blockSize</code> is not a multiple of <code>M</code>.
    */
-  embench_status fir_decimate_init_q15(
-        embench_fir_decimate_instance_q15 * S,
+  arm_status arm_fir_decimate_init_q15(
+        arm_fir_decimate_instance_q15 * S,
         uint16_t numTaps,
         uint8_t M,
   const q15_t * pCoeffs,
@@ -903,8 +938,8 @@ embench_status fir_decimate_init_f32(
    * @param[out] pDst  points to the block of output data
    * @param[in] blockSize number of input samples to process per call.
    */
-  void embench_fir_decimate_q31(
-  const embench_fir_decimate_instance_q31 * S,
+  void arm_fir_decimate_q31(
+  const arm_fir_decimate_instance_q31 * S,
   const q31_t * pSrc,
         q31_t * pDst,
         uint32_t blockSize);
@@ -916,8 +951,8 @@ embench_status fir_decimate_init_f32(
    * @param[out] pDst       points to the block of output data
    * @param[in]  blockSize  number of input samples to process per call.
    */
-  void embench_fir_decimate_fast_q31(
-  const embench_fir_decimate_instance_q31 * S,
+  void arm_fir_decimate_fast_q31(
+  const arm_fir_decimate_instance_q31 * S,
   const q31_t * pSrc,
         q31_t * pDst,
         uint32_t blockSize);
@@ -931,11 +966,11 @@ embench_status fir_decimate_init_f32(
    * @param[in]     pCoeffs    points to the filter coefficients.
    * @param[in]     pState     points to the state buffer.
    * @param[in]     blockSize  number of input samples to process per call.
-   * @return    The function returns EMBENCH_MATH_SUCCESS if initialization is successful or EMBENCH_MATH_LENGTH_ERROR if
+   * @return    The function returns ARM_MATH_SUCCESS if initialization is successful or ARM_MATH_LENGTH_ERROR if
    * <code>blockSize</code> is not a multiple of <code>M</code>.
    */
-  embench_status fir_decimate_init_q31(
-        embench_fir_decimate_instance_q31 * S,
+  arm_status arm_fir_decimate_init_q31(
+        arm_fir_decimate_instance_q31 * S,
         uint16_t numTaps,
         uint8_t M,
   const q31_t * pCoeffs,
@@ -952,7 +987,7 @@ embench_status fir_decimate_init_f32(
         uint16_t phaseLength;           /**< length of each polyphase filter component. */
   const q15_t *pCoeffs;                 /**< points to the coefficient array. The array is of length L*phaseLength. */
         q15_t *pState;                  /**< points to the state variable array. The array is of length blockSize+phaseLength-1. */
-  } embench_fir_interpolate_instance_q15;
+  } arm_fir_interpolate_instance_q15;
 
   /**
    * @brief Instance structure for the Q31 FIR interpolator.
@@ -963,7 +998,7 @@ embench_status fir_decimate_init_f32(
         uint16_t phaseLength;           /**< length of each polyphase filter component. */
   const q31_t *pCoeffs;                 /**< points to the coefficient array. The array is of length L*phaseLength. */
         q31_t *pState;                  /**< points to the state variable array. The array is of length blockSize+phaseLength-1. */
-  } embench_fir_interpolate_instance_q31;
+  } arm_fir_interpolate_instance_q31;
 
   /**
    * @brief Instance structure for the floating-point FIR interpolator.
@@ -974,7 +1009,7 @@ embench_status fir_decimate_init_f32(
         uint16_t phaseLength;          /**< length of each polyphase filter component. */
   const float32_t *pCoeffs;            /**< points to the coefficient array. The array is of length L*phaseLength. */
         float32_t *pState;             /**< points to the state variable array. The array is of length phaseLength+numTaps-1. */
-  } embench_fir_interpolate_instance_f32;
+  } arm_fir_interpolate_instance_f32;
 
 
   /**
@@ -984,8 +1019,8 @@ embench_status fir_decimate_init_f32(
    * @param[out] pDst       points to the block of output data.
    * @param[in]  blockSize  number of input samples to process per call.
    */
-  void embench_fir_interpolate_q15(
-  const embench_fir_interpolate_instance_q15 * S,
+  void arm_fir_interpolate_q15(
+  const arm_fir_interpolate_instance_q15 * S,
   const q15_t * pSrc,
         q15_t * pDst,
         uint32_t blockSize);
@@ -999,11 +1034,11 @@ embench_status fir_decimate_init_f32(
    * @param[in]     pCoeffs    points to the filter coefficient buffer.
    * @param[in]     pState     points to the state buffer.
    * @param[in]     blockSize  number of input samples to process per call.
-   * @return        The function returns EMBENCH_MATH_SUCCESS if initialization is successful or EMBENCH_MATH_LENGTH_ERROR if
+   * @return        The function returns ARM_MATH_SUCCESS if initialization is successful or ARM_MATH_LENGTH_ERROR if
    * the filter length <code>numTaps</code> is not a multiple of the interpolation factor <code>L</code>.
    */
-  embench_status fir_interpolate_init_q15(
-        embench_fir_interpolate_instance_q15 * S,
+  arm_status arm_fir_interpolate_init_q15(
+        arm_fir_interpolate_instance_q15 * S,
         uint8_t L,
         uint16_t numTaps,
   const q15_t * pCoeffs,
@@ -1018,8 +1053,8 @@ embench_status fir_decimate_init_f32(
    * @param[out] pDst       points to the block of output data.
    * @param[in]  blockSize  number of input samples to process per call.
    */
-  void embench_fir_interpolate_q31(
-  const embench_fir_interpolate_instance_q31 * S,
+  void arm_fir_interpolate_q31(
+  const arm_fir_interpolate_instance_q31 * S,
   const q31_t * pSrc,
         q31_t * pDst,
         uint32_t blockSize);
@@ -1033,11 +1068,11 @@ embench_status fir_decimate_init_f32(
    * @param[in]     pCoeffs    points to the filter coefficient buffer.
    * @param[in]     pState     points to the state buffer.
    * @param[in]     blockSize  number of input samples to process per call.
-   * @return        The function returns EMBENCH_MATH_SUCCESS if initialization is successful or EMBENCH_MATH_LENGTH_ERROR if
+   * @return        The function returns ARM_MATH_SUCCESS if initialization is successful or ARM_MATH_LENGTH_ERROR if
    * the filter length <code>numTaps</code> is not a multiple of the interpolation factor <code>L</code>.
    */
-  embench_status fir_interpolate_init_q31(
-        embench_fir_interpolate_instance_q31 * S,
+  arm_status arm_fir_interpolate_init_q31(
+        arm_fir_interpolate_instance_q31 * S,
         uint8_t L,
         uint16_t numTaps,
   const q31_t * pCoeffs,
@@ -1052,8 +1087,8 @@ embench_status fir_decimate_init_f32(
    * @param[out] pDst       points to the block of output data.
    * @param[in]  blockSize  number of input samples to process per call.
    */
-  void embench_fir_interpolate_f32(
-  const embench_fir_interpolate_instance_f32 * S,
+  void arm_fir_interpolate_f32(
+  const arm_fir_interpolate_instance_f32 * S,
   const float32_t * pSrc,
         float32_t * pDst,
         uint32_t blockSize);
@@ -1067,11 +1102,11 @@ embench_status fir_decimate_init_f32(
    * @param[in]     pCoeffs    points to the filter coefficient buffer.
    * @param[in]     pState     points to the state buffer.
    * @param[in]     blockSize  number of input samples to process per call.
-   * @return        The function returns EMBENCH_MATH_SUCCESS if initialization is successful or EMBENCH_MATH_LENGTH_ERROR if
+   * @return        The function returns ARM_MATH_SUCCESS if initialization is successful or ARM_MATH_LENGTH_ERROR if
    * the filter length <code>numTaps</code> is not a multiple of the interpolation factor <code>L</code>.
    */
-  embench_status fir_interpolate_init_f32(
-        embench_fir_interpolate_instance_f32 * S,
+  arm_status arm_fir_interpolate_init_f32(
+        arm_fir_interpolate_instance_f32 * S,
         uint8_t L,
         uint16_t numTaps,
   const float32_t * pCoeffs,
@@ -1088,7 +1123,7 @@ embench_status fir_decimate_init_f32(
           q63_t *pState;           /**< points to the array of state coefficients.  The array is of length 4*numStages. */
     const q31_t *pCoeffs;          /**< points to the array of coefficients.  The array is of length 5*numStages. */
           uint8_t postShift;       /**< additional shift, in bits, applied to each output sample. */
-  } embench_biquad_cas_df1_32x64_ins_q31;
+  } arm_biquad_cas_df1_32x64_ins_q31;
 
 
   /**
@@ -1097,8 +1132,8 @@ embench_status fir_decimate_init_f32(
    * @param[out] pDst       points to the block of output data
    * @param[in]  blockSize  number of samples to process.
    */
-  void embench_biquad_cas_df1_32x64_q31(
-  const embench_biquad_cas_df1_32x64_ins_q31 * S,
+  void arm_biquad_cas_df1_32x64_q31(
+  const arm_biquad_cas_df1_32x64_ins_q31 * S,
   const q31_t * pSrc,
         q31_t * pDst,
         uint32_t blockSize);
@@ -1111,8 +1146,8 @@ embench_status fir_decimate_init_f32(
    * @param[in]     pState     points to the state buffer.
    * @param[in]     postShift  shift to be applied to the output. Varies according to the coefficients format
    */
-  void embench_biquad_cas_df1_32x64_init_q31(
-        embench_biquad_cas_df1_32x64_ins_q31 * S,
+  void arm_biquad_cas_df1_32x64_init_q31(
+        arm_biquad_cas_df1_32x64_ins_q31 * S,
         uint8_t numStages,
   const q31_t * pCoeffs,
         q63_t * pState,
@@ -1127,7 +1162,7 @@ embench_status fir_decimate_init_f32(
           uint8_t numStages;         /**< number of 2nd order stages in the filter.  Overall order is 2*numStages. */
           float32_t *pState;         /**< points to the array of state coefficients.  The array is of length 2*numStages. */
     const float32_t *pCoeffs;        /**< points to the array of coefficients.  The array is of length 5*numStages. */
-  } embench_biquad_cascade_df2T_instance_f32;
+  } arm_biquad_cascade_df2T_instance_f32;
 
   /**
    * @brief Instance structure for the floating-point transposed direct form II Biquad cascade filter.
@@ -1137,7 +1172,7 @@ embench_status fir_decimate_init_f32(
           uint8_t numStages;         /**< number of 2nd order stages in the filter.  Overall order is 2*numStages. */
           float32_t *pState;         /**< points to the array of state coefficients.  The array is of length 4*numStages. */
     const float32_t *pCoeffs;        /**< points to the array of coefficients.  The array is of length 5*numStages. */
-  } embench_biquad_cascade_stereo_df2T_instance_f32;
+  } arm_biquad_cascade_stereo_df2T_instance_f32;
 
   /**
    * @brief Instance structure for the floating-point transposed direct form II Biquad cascade filter.
@@ -1147,7 +1182,7 @@ embench_status fir_decimate_init_f32(
           uint8_t numStages;         /**< number of 2nd order stages in the filter.  Overall order is 2*numStages. */
           float64_t *pState;         /**< points to the array of state coefficients.  The array is of length 2*numStages. */
     const float64_t *pCoeffs;        /**< points to the array of coefficients.  The array is of length 5*numStages. */
-  } embench_biquad_cascade_df2T_instance_f64;
+  } arm_biquad_cascade_df2T_instance_f64;
 
 
   /**
@@ -1157,8 +1192,8 @@ embench_status fir_decimate_init_f32(
    * @param[out] pDst       points to the block of output data
    * @param[in]  blockSize  number of samples to process.
    */
-  void embench_biquad_cascade_df2T_f32(
-  const embench_biquad_cascade_df2T_instance_f32 * S,
+  void arm_biquad_cascade_df2T_f32(
+  const arm_biquad_cascade_df2T_instance_f32 * S,
   const float32_t * pSrc,
         float32_t * pDst,
         uint32_t blockSize);
@@ -1171,8 +1206,8 @@ embench_status fir_decimate_init_f32(
    * @param[out] pDst       points to the block of output data
    * @param[in]  blockSize  number of samples to process.
    */
-  void embench_biquad_cascade_stereo_df2T_f32(
-  const embench_biquad_cascade_stereo_df2T_instance_f32 * S,
+  void arm_biquad_cascade_stereo_df2T_f32(
+  const arm_biquad_cascade_stereo_df2T_instance_f32 * S,
   const float32_t * pSrc,
         float32_t * pDst,
         uint32_t blockSize);
@@ -1185,13 +1220,12 @@ embench_status fir_decimate_init_f32(
    * @param[out] pDst       points to the block of output data
    * @param[in]  blockSize  number of samples to process.
    */
-  void embench_biquad_cascade_df2T_f64(
-  const embench_biquad_cascade_df2T_instance_f64 * S,
+  void arm_biquad_cascade_df2T_f64(
+  const arm_biquad_cascade_df2T_instance_f64 * S,
   const float64_t * pSrc,
         float64_t * pDst,
         uint32_t blockSize);
 
-
   /**
    * @brief  Initialization function for the floating-point transposed direct form II Biquad cascade filter.
    * @param[in,out] S          points to an instance of the filter data structure.
@@ -1199,8 +1233,8 @@ embench_status fir_decimate_init_f32(
    * @param[in]     pCoeffs    points to the filter coefficients.
    * @param[in]     pState     points to the state buffer.
    */
-  void embench_biquad_cascade_df2T_init_f32(
-        embench_biquad_cascade_df2T_instance_f32 * S,
+  void arm_biquad_cascade_df2T_init_f32(
+        arm_biquad_cascade_df2T_instance_f32 * S,
         uint8_t numStages,
   const float32_t * pCoeffs,
         float32_t * pState);
@@ -1213,8 +1247,8 @@ embench_status fir_decimate_init_f32(
    * @param[in]     pCoeffs    points to the filter coefficients.
    * @param[in]     pState     points to the state buffer.
    */
-  void embench_biquad_cascade_stereo_df2T_init_f32(
-        embench_biquad_cascade_stereo_df2T_instance_f32 * S,
+  void arm_biquad_cascade_stereo_df2T_init_f32(
+        arm_biquad_cascade_stereo_df2T_instance_f32 * S,
         uint8_t numStages,
   const float32_t * pCoeffs,
         float32_t * pState);
@@ -1227,8 +1261,8 @@ embench_status fir_decimate_init_f32(
    * @param[in]     pCoeffs    points to the filter coefficients.
    * @param[in]     pState     points to the state buffer.
    */
-  void embench_biquad_cascade_df2T_init_f64(
-        embench_biquad_cascade_df2T_instance_f64 * S,
+  void arm_biquad_cascade_df2T_init_f64(
+        arm_biquad_cascade_df2T_instance_f64 * S,
         uint8_t numStages,
         const float64_t * pCoeffs,
         float64_t * pState);
@@ -1242,7 +1276,7 @@ embench_status fir_decimate_init_f32(
           uint16_t numStages;                  /**< number of filter stages. */
           q15_t *pState;                       /**< points to the state variable array. The array is of length numStages. */
     const q15_t *pCoeffs;                      /**< points to the coefficient array. The array is of length numStages. */
-  } embench_fir_lattice_instance_q15;
+  } arm_fir_lattice_instance_q15;
 
   /**
    * @brief Instance structure for the Q31 FIR lattice filter.
@@ -1252,7 +1286,7 @@ embench_status fir_decimate_init_f32(
           uint16_t numStages;                  /**< number of filter stages. */
           q31_t *pState;                       /**< points to the state variable array. The array is of length numStages. */
     const q31_t *pCoeffs;                      /**< points to the coefficient array. The array is of length numStages. */
-  } embench_fir_lattice_instance_q31;
+  } arm_fir_lattice_instance_q31;
 
   /**
    * @brief Instance structure for the floating-point FIR lattice filter.
@@ -1262,7 +1296,7 @@ embench_status fir_decimate_init_f32(
           uint16_t numStages;                  /**< number of filter stages. */
           float32_t *pState;                   /**< points to the state variable array. The array is of length numStages. */
     const float32_t *pCoeffs;                  /**< points to the coefficient array. The array is of length numStages. */
-  } embench_fir_lattice_instance_f32;
+  } arm_fir_lattice_instance_f32;
 
 
   /**
@@ -1272,8 +1306,8 @@ embench_status fir_decimate_init_f32(
    * @param[in] pCoeffs    points to the coefficient buffer.  The array is of length numStages.
    * @param[in] pState     points to the state buffer.  The array is of length numStages.
    */
-  void embench_fir_lattice_init_q15(
-        embench_fir_lattice_instance_q15 * S,
+  void arm_fir_lattice_init_q15(
+        arm_fir_lattice_instance_q15 * S,
         uint16_t numStages,
   const q15_t * pCoeffs,
         q15_t * pState);
@@ -1286,8 +1320,8 @@ embench_status fir_decimate_init_f32(
    * @param[out] pDst       points to the block of output data.
    * @param[in]  blockSize  number of samples to process.
    */
-  void embench_fir_lattice_q15(
-  const embench_fir_lattice_instance_q15 * S,
+  void arm_fir_lattice_q15(
+  const arm_fir_lattice_instance_q15 * S,
   const q15_t * pSrc,
         q15_t * pDst,
         uint32_t blockSize);
@@ -1300,8 +1334,8 @@ embench_status fir_decimate_init_f32(
    * @param[in] pCoeffs    points to the coefficient buffer.  The array is of length numStages.
    * @param[in] pState     points to the state buffer.   The array is of length numStages.
    */
-  void embench_fir_lattice_init_q31(
-        embench_fir_lattice_instance_q31 * S,
+  void arm_fir_lattice_init_q31(
+        arm_fir_lattice_instance_q31 * S,
         uint16_t numStages,
   const q31_t * pCoeffs,
         q31_t * pState);
@@ -1314,8 +1348,8 @@ embench_status fir_decimate_init_f32(
    * @param[out] pDst       points to the block of output data
    * @param[in]  blockSize  number of samples to process.
    */
-  void embench_fir_lattice_q31(
-  const embench_fir_lattice_instance_q31 * S,
+  void arm_fir_lattice_q31(
+  const arm_fir_lattice_instance_q31 * S,
   const q31_t * pSrc,
         q31_t * pDst,
         uint32_t blockSize);
@@ -1328,8 +1362,8 @@ embench_status fir_decimate_init_f32(
  * @param[in] pCoeffs    points to the coefficient buffer.  The array is of length numStages.
  * @param[in] pState     points to the state buffer.  The array is of length numStages.
  */
-  void embench_fir_lattice_init_f32(
-        embench_fir_lattice_instance_f32 * S,
+  void arm_fir_lattice_init_f32(
+        arm_fir_lattice_instance_f32 * S,
         uint16_t numStages,
   const float32_t * pCoeffs,
         float32_t * pState);
@@ -1342,8 +1376,8 @@ embench_status fir_decimate_init_f32(
    * @param[out] pDst       points to the block of output data
    * @param[in]  blockSize  number of samples to process.
    */
-  void embench_fir_lattice_f32(
-  const embench_fir_lattice_instance_f32 * S,
+  void arm_fir_lattice_f32(
+  const arm_fir_lattice_instance_f32 * S,
   const float32_t * pSrc,
         float32_t * pDst,
         uint32_t blockSize);
@@ -1358,7 +1392,7 @@ embench_status fir_decimate_init_f32(
           q15_t *pState;                       /**< points to the state variable array. The array is of length numStages+blockSize. */
           q15_t *pkCoeffs;                     /**< points to the reflection coefficient array. The array is of length numStages. */
           q15_t *pvCoeffs;                     /**< points to the ladder coefficient array. The array is of length numStages+1. */
-  } embench_iir_lattice_instance_q15;
+  } arm_iir_lattice_instance_q15;
 
   /**
    * @brief Instance structure for the Q31 IIR lattice filter.
@@ -1369,7 +1403,7 @@ embench_status fir_decimate_init_f32(
           q31_t *pState;                       /**< points to the state variable array. The array is of length numStages+blockSize. */
           q31_t *pkCoeffs;                     /**< points to the reflection coefficient array. The array is of length numStages. */
           q31_t *pvCoeffs;                     /**< points to the ladder coefficient array. The array is of length numStages+1. */
-  } embench_iir_lattice_instance_q31;
+  } arm_iir_lattice_instance_q31;
 
   /**
    * @brief Instance structure for the floating-point IIR lattice filter.
@@ -1380,7 +1414,7 @@ embench_status fir_decimate_init_f32(
           float32_t *pState;                   /**< points to the state variable array. The array is of length numStages+blockSize. */
           float32_t *pkCoeffs;                 /**< points to the reflection coefficient array. The array is of length numStages. */
           float32_t *pvCoeffs;                 /**< points to the ladder coefficient array. The array is of length numStages+1. */
-  } embench_iir_lattice_instance_f32;
+  } arm_iir_lattice_instance_f32;
 
 
   /**
@@ -1390,8 +1424,8 @@ embench_status fir_decimate_init_f32(
    * @param[out] pDst       points to the block of output data.
    * @param[in]  blockSize  number of samples to process.
    */
-  void embench_iir_lattice_f32(
-  const embench_iir_lattice_instance_f32 * S,
+  void arm_iir_lattice_f32(
+  const arm_iir_lattice_instance_f32 * S,
   const float32_t * pSrc,
         float32_t * pDst,
         uint32_t blockSize);
@@ -1406,8 +1440,8 @@ embench_status fir_decimate_init_f32(
    * @param[in] pState     points to the state buffer.  The array is of length numStages+blockSize-1.
    * @param[in] blockSize  number of samples to process.
    */
-  void embench_iir_lattice_init_f32(
-        embench_iir_lattice_instance_f32 * S,
+  void arm_iir_lattice_init_f32(
+        arm_iir_lattice_instance_f32 * S,
         uint16_t numStages,
         float32_t * pkCoeffs,
         float32_t * pvCoeffs,
@@ -1422,8 +1456,8 @@ embench_status fir_decimate_init_f32(
    * @param[out] pDst       points to the block of output data.
    * @param[in]  blockSize  number of samples to process.
    */
-  void embench_iir_lattice_q31(
-  const embench_iir_lattice_instance_q31 * S,
+  void arm_iir_lattice_q31(
+  const arm_iir_lattice_instance_q31 * S,
   const q31_t * pSrc,
         q31_t * pDst,
         uint32_t blockSize);
@@ -1438,8 +1472,8 @@ embench_status fir_decimate_init_f32(
    * @param[in] pState     points to the state buffer.  The array is of length numStages+blockSize.
    * @param[in] blockSize  number of samples to process.
    */
-  void embench_iir_lattice_init_q31(
-        embench_iir_lattice_instance_q31 * S,
+  void arm_iir_lattice_init_q31(
+        arm_iir_lattice_instance_q31 * S,
         uint16_t numStages,
         q31_t * pkCoeffs,
         q31_t * pvCoeffs,
@@ -1454,8 +1488,8 @@ embench_status fir_decimate_init_f32(
    * @param[out] pDst       points to the block of output data.
    * @param[in]  blockSize  number of samples to process.
    */
-  void embench_iir_lattice_q15(
-  const embench_iir_lattice_instance_q15 * S,
+  void arm_iir_lattice_q15(
+  const arm_iir_lattice_instance_q15 * S,
   const q15_t * pSrc,
         q15_t * pDst,
         uint32_t blockSize);
@@ -1470,8 +1504,8 @@ embench_status fir_decimate_init_f32(
  * @param[in] pState     points to state buffer.  The array is of length numStages+blockSize.
  * @param[in] blockSize  number of samples to process per call.
  */
-  void embench_iir_lattice_init_q15(
-        embench_iir_lattice_instance_q15 * S,
+  void arm_iir_lattice_init_q15(
+        arm_iir_lattice_instance_q15 * S,
         uint16_t numStages,
         q15_t * pkCoeffs,
         q15_t * pvCoeffs,
@@ -1488,7 +1522,7 @@ embench_status fir_decimate_init_f32(
           float32_t *pState;   /**< points to the state variable array. The array is of length numTaps+blockSize-1. */
           float32_t *pCoeffs;  /**< points to the coefficient array. The array is of length numTaps. */
           float32_t mu;        /**< step size that controls filter coefficient updates. */
-  } embench_lms_instance_f32;
+  } arm_lms_instance_f32;
 
 
   /**
@@ -1500,8 +1534,8 @@ embench_status fir_decimate_init_f32(
    * @param[out] pErr       points to the block of error data.
    * @param[in]  blockSize  number of samples to process.
    */
-  void embench_lms_f32(
-  const embench_lms_instance_f32 * S,
+  void arm_lms_f32(
+  const arm_lms_instance_f32 * S,
   const float32_t * pSrc,
         float32_t * pRef,
         float32_t * pOut,
@@ -1518,8 +1552,8 @@ embench_status fir_decimate_init_f32(
    * @param[in] mu         step size that controls filter coefficient updates.
    * @param[in] blockSize  number of samples to process.
    */
-  void embench_lms_init_f32(
-        embench_lms_instance_f32 * S,
+  void arm_lms_init_f32(
+        arm_lms_instance_f32 * S,
         uint16_t numTaps,
         float32_t * pCoeffs,
         float32_t * pState,
@@ -1537,7 +1571,7 @@ embench_status fir_decimate_init_f32(
           q15_t *pCoeffs;      /**< points to the coefficient array. The array is of length numTaps. */
           q15_t mu;            /**< step size that controls filter coefficient updates. */
           uint32_t postShift;  /**< bit shift applied to coefficients. */
-  } embench_lms_instance_q15;
+  } arm_lms_instance_q15;
 
 
   /**
@@ -1550,8 +1584,8 @@ embench_status fir_decimate_init_f32(
    * @param[in] blockSize  number of samples to process.
    * @param[in] postShift  bit shift applied to coefficients.
    */
-  void embench_lms_init_q15(
-        embench_lms_instance_q15 * S,
+  void arm_lms_init_q15(
+        arm_lms_instance_q15 * S,
         uint16_t numTaps,
         q15_t * pCoeffs,
         q15_t * pState,
@@ -1569,8 +1603,8 @@ embench_status fir_decimate_init_f32(
    * @param[out] pErr       points to the block of error data.
    * @param[in]  blockSize  number of samples to process.
    */
-  void embench_lms_q15(
-  const embench_lms_instance_q15 * S,
+  void arm_lms_q15(
+  const arm_lms_instance_q15 * S,
   const q15_t * pSrc,
         q15_t * pRef,
         q15_t * pOut,
@@ -1588,7 +1622,7 @@ embench_status fir_decimate_init_f32(
           q31_t *pCoeffs;      /**< points to the coefficient array. The array is of length numTaps. */
           q31_t mu;            /**< step size that controls filter coefficient updates. */
           uint32_t postShift;  /**< bit shift applied to coefficients. */
-  } embench_lms_instance_q31;
+  } arm_lms_instance_q31;
 
 
   /**
@@ -1600,8 +1634,8 @@ embench_status fir_decimate_init_f32(
    * @param[out] pErr       points to the block of error data.
    * @param[in]  blockSize  number of samples to process.
    */
-  void embench_lms_q31(
-  const embench_lms_instance_q31 * S,
+  void arm_lms_q31(
+  const arm_lms_instance_q31 * S,
   const q31_t * pSrc,
         q31_t * pRef,
         q31_t * pOut,
@@ -1619,8 +1653,8 @@ embench_status fir_decimate_init_f32(
    * @param[in] blockSize  number of samples to process.
    * @param[in] postShift  bit shift applied to coefficients.
    */
-  void embench_lms_init_q31(
-        embench_lms_instance_q31 * S,
+  void arm_lms_init_q31(
+        arm_lms_instance_q31 * S,
         uint16_t numTaps,
         q31_t * pCoeffs,
         q31_t * pState,
@@ -1640,7 +1674,7 @@ embench_status fir_decimate_init_f32(
           float32_t mu;         /**< step size that control filter coefficient updates. */
           float32_t energy;     /**< saves previous frame energy. */
           float32_t x0;         /**< saves previous input sample. */
-  } embench_lms_norm_instance_f32;
+  } arm_lms_norm_instance_f32;
 
 
   /**
@@ -1652,8 +1686,8 @@ embench_status fir_decimate_init_f32(
    * @param[out] pErr       points to the block of error data.
    * @param[in]  blockSize  number of samples to process.
    */
-  void embench_lms_norm_f32(
-        embench_lms_norm_instance_f32 * S,
+  void arm_lms_norm_f32(
+        arm_lms_norm_instance_f32 * S,
   const float32_t * pSrc,
         float32_t * pRef,
         float32_t * pOut,
@@ -1670,8 +1704,8 @@ embench_status fir_decimate_init_f32(
    * @param[in] mu         step size that controls filter coefficient updates.
    * @param[in] blockSize  number of samples to process.
    */
-  void embench_lms_norm_init_f32(
-        embench_lms_norm_instance_f32 * S,
+  void arm_lms_norm_init_f32(
+        arm_lms_norm_instance_f32 * S,
         uint16_t numTaps,
         float32_t * pCoeffs,
         float32_t * pState,
@@ -1692,7 +1726,7 @@ embench_status fir_decimate_init_f32(
     const q31_t *recipTable;    /**< points to the reciprocal initial value table. */
           q31_t energy;         /**< saves previous frame energy. */
           q31_t x0;             /**< saves previous input sample. */
-  } embench_lms_norm_instance_q31;
+  } arm_lms_norm_instance_q31;
 
 
   /**
@@ -1704,8 +1738,8 @@ embench_status fir_decimate_init_f32(
    * @param[out] pErr       points to the block of error data.
    * @param[in]  blockSize  number of samples to process.
    */
-  void embench_lms_norm_q31(
-        embench_lms_norm_instance_q31 * S,
+  void arm_lms_norm_q31(
+        arm_lms_norm_instance_q31 * S,
   const q31_t * pSrc,
         q31_t * pRef,
         q31_t * pOut,
@@ -1723,8 +1757,8 @@ embench_status fir_decimate_init_f32(
    * @param[in] blockSize  number of samples to process.
    * @param[in] postShift  bit shift applied to coefficients.
    */
-  void embench_lms_norm_init_q31(
-        embench_lms_norm_instance_q31 * S,
+  void arm_lms_norm_init_q31(
+        arm_lms_norm_instance_q31 * S,
         uint16_t numTaps,
         q31_t * pCoeffs,
         q31_t * pState,
@@ -1746,7 +1780,7 @@ embench_status fir_decimate_init_f32(
     const q15_t *recipTable;    /**< Points to the reciprocal initial value table. */
           q15_t energy;         /**< saves previous frame energy. */
           q15_t x0;             /**< saves previous input sample. */
-  } embench_lms_norm_instance_q15;
+  } arm_lms_norm_instance_q15;
 
 
   /**
@@ -1758,8 +1792,8 @@ embench_status fir_decimate_init_f32(
    * @param[out] pErr       points to the block of error data.
    * @param[in]  blockSize  number of samples to process.
    */
-  void embench_lms_norm_q15(
-        embench_lms_norm_instance_q15 * S,
+  void arm_lms_norm_q15(
+        arm_lms_norm_instance_q15 * S,
   const q15_t * pSrc,
         q15_t * pRef,
         q15_t * pOut,
@@ -1777,8 +1811,8 @@ embench_status fir_decimate_init_f32(
    * @param[in] blockSize  number of samples to process.
    * @param[in] postShift  bit shift applied to coefficients.
    */
-  void embench_lms_norm_init_q15(
-        embench_lms_norm_instance_q15 * S,
+  void arm_lms_norm_init_q15(
+        arm_lms_norm_instance_q15 * S,
         uint16_t numTaps,
         q15_t * pCoeffs,
         q15_t * pState,
@@ -1795,7 +1829,7 @@ embench_status fir_decimate_init_f32(
    * @param[in]  srcBLen  length of the second input sequence.
    * @param[out] pDst     points to the block of output data  Length 2 * max(srcALen, srcBLen) - 1.
    */
-  void embench_correlate_f32(
+  void arm_correlate_f32(
   const float32_t * pSrcA,
         uint32_t srcALen,
   const float32_t * pSrcB,
@@ -1811,7 +1845,7 @@ embench_status fir_decimate_init_f32(
    * @param[in]  srcBLen  length of the second input sequence.
    * @param[out] pDst     points to the block of output data  Length 2 * max(srcALen, srcBLen) - 1.
    */
-  void embench_correlate_f64(
+  void arm_correlate_f64(
   const float64_t * pSrcA,
         uint32_t srcALen,
   const float64_t * pSrcB,
@@ -1828,7 +1862,7 @@ embench_status fir_decimate_init_f32(
  @param[out] pDst      points to the block of output data  Length 2 * max(srcALen, srcBLen) - 1.
  @param[in]  pScratch  points to scratch buffer of size max(srcALen, srcBLen) + 2*min(srcALen, srcBLen) - 2.
 */
-void embench_correlate_opt_q15(
+void arm_correlate_opt_q15(
   const q15_t * pSrcA,
         uint32_t srcALen,
   const q15_t * pSrcB,
@@ -1845,7 +1879,7 @@ void embench_correlate_opt_q15(
   @param[in]  srcBLen  length of the second input sequence
   @param[out] pDst     points to the block of output data  Length 2 * max(srcALen, srcBLen) - 1.
  */
-  void embench_correlate_q15(
+  void arm_correlate_q15(
   const q15_t * pSrcA,
         uint32_t srcALen,
   const q15_t * pSrcB,
@@ -1861,7 +1895,7 @@ void embench_correlate_opt_q15(
   @param[in]     srcBLen    length of the second input sequence
   @param[out]    pDst       points to the location where the output result is written.  Length 2 * max(srcALen, srcBLen) - 1.
  */
-void embench_correlate_fast_q15(
+void arm_correlate_fast_q15(
   const q15_t * pSrcA,
         uint32_t srcALen,
   const q15_t * pSrcB,
@@ -1878,7 +1912,7 @@ void embench_correlate_fast_q15(
   @param[out] pDst      points to the block of output data  Length 2 * max(srcALen, srcBLen) - 1.
   @param[in]  pScratch  points to scratch buffer of size max(srcALen, srcBLen) + 2*min(srcALen, srcBLen) - 2.
  */
-void embench_correlate_fast_opt_q15(
+void arm_correlate_fast_opt_q15(
   const q15_t * pSrcA,
         uint32_t srcALen,
   const q15_t * pSrcB,
@@ -1895,7 +1929,7 @@ void embench_correlate_fast_opt_q15(
    * @param[in]  srcBLen  length of the second input sequence.
    * @param[out] pDst     points to the block of output data  Length 2 * max(srcALen, srcBLen) - 1.
    */
-  void embench_correlate_q31(
+  void arm_correlate_q31(
   const q31_t * pSrcA,
         uint32_t srcALen,
   const q31_t * pSrcB,
@@ -1911,7 +1945,7 @@ void embench_correlate_fast_opt_q15(
   @param[in]  srcBLen  length of the second input sequence
   @param[out] pDst     points to the block of output data  Length 2 * max(srcALen, srcBLen) - 1.
  */
-void embench_correlate_fast_q31(
+void arm_correlate_fast_q31(
   const q31_t * pSrcA,
         uint32_t srcALen,
   const q31_t * pSrcB,
@@ -1929,7 +1963,7 @@ void embench_correlate_fast_q31(
    * @param[in]  pScratch1  points to scratch buffer(of type q15_t) of size max(srcALen, srcBLen) + 2*min(srcALen, srcBLen) - 2.
    * @param[in]  pScratch2  points to scratch buffer (of type q15_t) of size min(srcALen, srcBLen).
    */
-  void embench_correlate_opt_q7(
+  void arm_correlate_opt_q7(
   const q7_t * pSrcA,
         uint32_t srcALen,
   const q7_t * pSrcB,
@@ -1947,7 +1981,7 @@ void embench_correlate_fast_q31(
    * @param[in]  srcBLen  length of the second input sequence.
    * @param[out] pDst     points to the block of output data  Length 2 * max(srcALen, srcBLen) - 1.
    */
-  void embench_correlate_q7(
+  void arm_correlate_q7(
   const q7_t * pSrcA,
         uint32_t srcALen,
   const q7_t * pSrcB,
@@ -1966,7 +2000,7 @@ void embench_correlate_fast_q31(
     const float32_t *pCoeffs;           /**< points to the coefficient array. The array is of length numTaps.*/
           uint16_t maxDelay;            /**< maximum offset specified by the pTapDelay array. */
           int32_t *pTapDelay;           /**< points to the array of delay values.  The array is of length numTaps. */
-  } embench_fir_sparse_instance_f32;
+  } arm_fir_sparse_instance_f32;
 
   /**
    * @brief Instance structure for the Q31 sparse FIR filter.
@@ -1979,7 +2013,7 @@ void embench_correlate_fast_q31(
     const q31_t *pCoeffs;               /**< points to the coefficient array. The array is of length numTaps.*/
           uint16_t maxDelay;            /**< maximum offset specified by the pTapDelay array. */
           int32_t *pTapDelay;           /**< points to the array of delay values.  The array is of length numTaps. */
-  } embench_fir_sparse_instance_q31;
+  } arm_fir_sparse_instance_q31;
 
   /**
    * @brief Instance structure for the Q15 sparse FIR filter.
@@ -1992,7 +2026,7 @@ void embench_correlate_fast_q31(
     const q15_t *pCoeffs;               /**< points to the coefficient array. The array is of length numTaps.*/
           uint16_t maxDelay;            /**< maximum offset specified by the pTapDelay array. */
           int32_t *pTapDelay;           /**< points to the array of delay values.  The array is of length numTaps. */
-  } embench_fir_sparse_instance_q15;
+  } arm_fir_sparse_instance_q15;
 
   /**
    * @brief Instance structure for the Q7 sparse FIR filter.
@@ -2005,7 +2039,7 @@ void embench_correlate_fast_q31(
     const q7_t *pCoeffs;                /**< points to the coefficient array. The array is of length numTaps.*/
           uint16_t maxDelay;            /**< maximum offset specified by the pTapDelay array. */
           int32_t *pTapDelay;           /**< points to the array of delay values.  The array is of length numTaps. */
-  } embench_fir_sparse_instance_q7;
+  } arm_fir_sparse_instance_q7;
 
 
   /**
@@ -2016,8 +2050,8 @@ void embench_correlate_fast_q31(
    * @param[in]  pScratchIn  points to a temporary buffer of size blockSize.
    * @param[in]  blockSize   number of input samples to process per call.
    */
-  void embench_fir_sparse_f32(
-        embench_fir_sparse_instance_f32 * S,
+  void arm_fir_sparse_f32(
+        arm_fir_sparse_instance_f32 * S,
   const float32_t * pSrc,
         float32_t * pDst,
         float32_t * pScratchIn,
@@ -2034,8 +2068,8 @@ void embench_correlate_fast_q31(
    * @param[in]     maxDelay   maximum offset time supported.
    * @param[in]     blockSize  number of samples that will be processed per block.
    */
-  void embench_fir_sparse_init_f32(
-        embench_fir_sparse_instance_f32 * S,
+  void arm_fir_sparse_init_f32(
+        arm_fir_sparse_instance_f32 * S,
         uint16_t numTaps,
   const float32_t * pCoeffs,
         float32_t * pState,
@@ -2052,8 +2086,8 @@ void embench_correlate_fast_q31(
    * @param[in]  pScratchIn  points to a temporary buffer of size blockSize.
    * @param[in]  blockSize   number of input samples to process per call.
    */
-  void embench_fir_sparse_q31(
-        embench_fir_sparse_instance_q31 * S,
+  void arm_fir_sparse_q31(
+        arm_fir_sparse_instance_q31 * S,
   const q31_t * pSrc,
         q31_t * pDst,
         q31_t * pScratchIn,
@@ -2070,8 +2104,8 @@ void embench_correlate_fast_q31(
    * @param[in]     maxDelay   maximum offset time supported.
    * @param[in]     blockSize  number of samples that will be processed per block.
    */
-  void embench_fir_sparse_init_q31(
-        embench_fir_sparse_instance_q31 * S,
+  void arm_fir_sparse_init_q31(
+        arm_fir_sparse_instance_q31 * S,
         uint16_t numTaps,
   const q31_t * pCoeffs,
         q31_t * pState,
@@ -2089,8 +2123,8 @@ void embench_correlate_fast_q31(
    * @param[in]  pScratchOut  points to a temporary buffer of size blockSize.
    * @param[in]  blockSize    number of input samples to process per call.
    */
-  void embench_fir_sparse_q15(
-        embench_fir_sparse_instance_q15 * S,
+  void arm_fir_sparse_q15(
+        arm_fir_sparse_instance_q15 * S,
   const q15_t * pSrc,
         q15_t * pDst,
         q15_t * pScratchIn,
@@ -2108,8 +2142,8 @@ void embench_correlate_fast_q31(
    * @param[in]     maxDelay   maximum offset time supported.
    * @param[in]     blockSize  number of samples that will be processed per block.
    */
-  void embench_fir_sparse_init_q15(
-        embench_fir_sparse_instance_q15 * S,
+  void arm_fir_sparse_init_q15(
+        arm_fir_sparse_instance_q15 * S,
         uint16_t numTaps,
   const q15_t * pCoeffs,
         q15_t * pState,
@@ -2127,8 +2161,8 @@ void embench_correlate_fast_q31(
    * @param[in]  pScratchOut  points to a temporary buffer of size blockSize.
    * @param[in]  blockSize    number of input samples to process per call.
    */
-  void embench_fir_sparse_q7(
-        embench_fir_sparse_instance_q7 * S,
+  void arm_fir_sparse_q7(
+        arm_fir_sparse_instance_q7 * S,
   const q7_t * pSrc,
         q7_t * pDst,
         q7_t * pScratchIn,
@@ -2146,8 +2180,8 @@ void embench_correlate_fast_q31(
    * @param[in]     maxDelay   maximum offset time supported.
    * @param[in]     blockSize  number of samples that will be processed per block.
    */
-  void embench_fir_sparse_init_q7(
-        embench_fir_sparse_instance_q7 * S,
+  void arm_fir_sparse_init_q7(
+        arm_fir_sparse_instance_q7 * S,
         uint16_t numTaps,
   const q7_t * pCoeffs,
         q7_t * pState,
@@ -2163,7 +2197,7 @@ void embench_correlate_fast_q31(
   /**
    * @brief floating-point Circular write function.
    */
-  static inline __attribute__((always_inline)) void embench_circularWrite_f32(
+  __STATIC_FORCEINLINE void arm_circularWrite_f32(
   int32_t * circBuffer,
   int32_t L,
   uint16_t * writeOffset,
@@ -2208,7 +2242,7 @@ void embench_correlate_fast_q31(
   /**
    * @brief floating-point Circular Read function.
    */
-  static inline __attribute__((always_inline)) void embench_circularRead_f32(
+  __STATIC_FORCEINLINE void arm_circularRead_f32(
   int32_t * circBuffer,
   int32_t L,
   int32_t * readOffset,
@@ -2264,7 +2298,7 @@ void embench_correlate_fast_q31(
   /**
    * @brief Q15 Circular write function.
    */
-  static inline __attribute__((always_inline)) void embench_circularWrite_q15(
+  __STATIC_FORCEINLINE void arm_circularWrite_q15(
   q15_t * circBuffer,
   int32_t L,
   uint16_t * writeOffset,
@@ -2308,7 +2342,7 @@ void embench_correlate_fast_q31(
   /**
    * @brief Q15 Circular Read function.
    */
-  static inline __attribute__((always_inline)) void embench_circularRead_q15(
+  __STATIC_FORCEINLINE void arm_circularRead_q15(
   q15_t * circBuffer,
   int32_t L,
   int32_t * readOffset,
@@ -2365,7 +2399,7 @@ void embench_correlate_fast_q31(
   /**
    * @brief Q7 Circular write function.
    */
-  static inline __attribute__((always_inline)) void embench_circularWrite_q7(
+  __STATIC_FORCEINLINE void arm_circularWrite_q7(
   q7_t * circBuffer,
   int32_t L,
   uint16_t * writeOffset,
@@ -2409,7 +2443,7 @@ void embench_correlate_fast_q31(
   /**
    * @brief Q7 Circular Read function.
    */
-  static inline __attribute__((always_inline)) void embench_circularRead_q7(
+  __STATIC_FORCEINLINE void arm_circularRead_q7(
   q7_t * circBuffer,
   int32_t L,
   int32_t * readOffset,
@@ -2470,7 +2504,7 @@ void embench_correlate_fast_q31(
   @param[out]    err      prediction error (variance)
   @param[in]     nbCoefs  number of autoregressive coefficients
  */
-void embench_levinson_durbin_f32(const float32_t *phi,
+void arm_levinson_durbin_f32(const float32_t *phi,
   float32_t *a, 
   float32_t *err,
   int nbCoefs);
@@ -2483,7 +2517,7 @@ void embench_levinson_durbin_f32(const float32_t *phi,
   @param[out]    err      prediction error (variance)
   @param[in]     nbCoefs  number of autoregressive coefficients
  */
-void embench_levinson_durbin_q31(const q31_t *phi,
+void arm_levinson_durbin_q31(const q31_t *phi,
   q31_t *a, 
   q31_t *err,
   int nbCoefs);
