@@ -29,14 +29,17 @@ TST_SRC    +=$(CMN_DIR)/snr.c
 # TEST
 ##############################################################
 
-DATA_SEL    =data
+ifeq ($(CFG),)
+  CFG       =default
+  $(warning WARNING: CFG not set for dct4_512_f32. Defaulting to CFG=default.)
+endif
 
 ### DEFINES
 TST_DEF    +=
 
 ### INCLUDES
 TST_INC    +=-I $(TST_DIR)
-TST_INC    +=-I $(TST_DIR)/$(DATA_SEL)
+TST_INC    +=-I $(TST_DIR)/cfg/$(CFG)
 
 ### FLAGS
 TST_FLG    +=$(TST_DEF)
@@ -52,8 +55,8 @@ TST_SRC    +=$(DSP_DIR)/source/TransformFunctions/arm_bitreversal2.c
 TST_SRC    +=$(DSP_DIR)/source/CommonTables/CommonTables.c
 
 # data files
-TST_SRC    +=$(TST_DIR)/$(DATA_SEL)/in.c
-TST_SRC    +=$(TST_DIR)/$(DATA_SEL)/out.c
+TST_SRC    +=$(TST_DIR)/cfg/$(CFG)/in.c
+TST_SRC    +=$(TST_DIR)/cfg/$(CFG)/out.c
 
 ### OBJECTS
 TST_OBJ    +=$(patsubst %.c,%.o, $(patsubst %.S,%.o,$(notdir $(TST_SRC))))

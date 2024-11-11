@@ -19,7 +19,7 @@ en_plots      = True
 en_filegen    = False
 
 # generated file path and names
-fpath         = os.path.join(tst_path, 'data')
+fpath         = os.path.join(tst_path, 'cfg', 'default')
 input_fnm     = "in.c"
 output_fnm    = "out.c"
 header_fnm    = "data.h"
