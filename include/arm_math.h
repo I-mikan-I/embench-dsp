@@ -41,7 +41,7 @@
 #include "dsp/complex_math_functions.h"
 // #include "dsp/statistics_functions.h"
 // #include "dsp/controller_functions.h"
-#include "dsp/support_functions.h"
+// #include "dsp/support_functions.h"
 // #include "dsp/distance_functions.h"
 // #include "dsp/svm_functions.h"
 #include "dsp/fast_math_functions.h"
