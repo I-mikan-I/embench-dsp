@@ -7,9 +7,7 @@
 #define N_TAPS          (256)
 #define TOTAL_SAMPLES   (384)
 #define N_SAMPLES       (128)
-#define FRAME_SIZE      (128)
-#define N_FRAMES        (1)
-#define SNR_REF_THLD    (130)
+#define SNR_REF_THLD    (123)
 
 extern float32_t coeff[N_TAPS];
 extern float32_t input[TOTAL_SAMPLES];

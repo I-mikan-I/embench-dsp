@@ -29,14 +29,17 @@ TST_SRC    +=$(CMN_DIR)/snr.c
 # TEST
 ##############################################################
 
-DATA_SEL    =data
+ifeq ($(CFG),)
+  CFG       =taps256_n128
+  $(warning WARNING: CFG not set for fir_f32. Defaulting to CFG=taps256_n128)
+endif
 
 ### DEFINES
 TST_DEF    +=
 
 ### INCLUDES
 TST_INC    +=-I $(TST_DIR)
-TST_INC    +=-I $(TST_DIR)/$(DATA_SEL)
+TST_INC    +=-I $(TST_DIR)/cfg/$(CFG)
 
 ### FLAGS
 TST_FLG    +=$(TST_DEF)
@@ -47,9 +50,9 @@ TST_SRC    +=$(DSP_DIR)/source/FilteringFunctions/arm_fir_f32.c
 TST_SRC    +=$(DSP_DIR)/source/FilteringFunctions/arm_fir_init_f32.c
 
 # data files
-TST_SRC    +=$(TST_DIR)/$(DATA_SEL)/in.c
-TST_SRC    +=$(TST_DIR)/$(DATA_SEL)/coeff.c
-TST_SRC    +=$(TST_DIR)/$(DATA_SEL)/out.c
+TST_SRC    +=$(TST_DIR)/cfg/$(CFG)/in.c
+TST_SRC    +=$(TST_DIR)/cfg/$(CFG)/coeff.c
+TST_SRC    +=$(TST_DIR)/cfg/$(CFG)/out.c
 
 ### OBJECTS
 TST_OBJ    +=$(patsubst %.c,%.o, $(patsubst %.S,%.o,$(notdir $(TST_SRC))))
