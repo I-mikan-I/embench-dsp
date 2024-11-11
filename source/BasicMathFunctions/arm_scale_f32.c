@@ -1,13 +1,3 @@
-/******************************************************************************
- * Project:        Embench DSP Library
- * Title:          embench_scale_f32.c
- * Description:    Multiplies a floating-point vector by a scalar
- ******************************************************************************/
-/*
- * Modified from Arm CMSIS DSP Libray (see Apache license below)
- */
-
-
 /* ----------------------------------------------------------------------
  * Project:      CMSIS DSP Library
  * Title:        arm_scale_f32.c
@@ -82,7 +72,7 @@
   @param[in]     blockSize  number of samples in each vector
  */
 
-void embench_scale_f32(
+ARM_DSP_ATTRIBUTE void arm_scale_f32(
   const float32_t *pSrc,
         float32_t scale,
         float32_t *pDst,
@@ -90,7 +80,7 @@ void embench_scale_f32(
 {
   uint32_t blkCnt;                               /* Loop counter */
 
-#if defined (MATH_LOOPUNROLL)
+#if defined (ARM_MATH_LOOPUNROLL)
 
   /* Loop unrolling: Compute 4 outputs at a time */
   blkCnt = blockSize >> 2U;

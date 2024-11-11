@@ -571,8 +571,8 @@ arm_status arm_rfft_fast_init_f32 (
           float32_t normalize;                 /**< normalizing factor. */
     const float32_t *pTwiddle;                 /**< points to the twiddle factor table. */
     const float32_t *pCosFactor;               /**< points to the cosFactor table. */
-          arm_rfft_instance_f32 *pRfft;        /**< points to the real FFT instance. */
-          arm_cfft_radix4_instance_f32 *pCfft; /**< points to the complex FFT instance. */
+          arm_rfft_fast_instance_f32 *pRfft;   /**< points to the real FFT instance. */
+          arm_cfft_instance_f32 *pCfft;        /**< points to the complex FFT instance. */
   } arm_dct4_instance_f32;
 
 
