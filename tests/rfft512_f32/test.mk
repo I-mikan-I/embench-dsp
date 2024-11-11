@@ -31,7 +31,7 @@ TST_SRC    +=$(CMN_DIR)/snr.c
 
 ifeq ($(CFG),)
   CFG       =default
-  $(warning WARNING: CFG not set for rfft1024_f32. Defaulting to CFG=default.)
+  $(warning WARNING: CFG not set for rfft512_f32. Defaulting to CFG=default.)
 endif
 
 ### DEFINES
