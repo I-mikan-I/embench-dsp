@@ -28,7 +28,7 @@ size
 make rebuild TEST=biquad_cascade_df2T_f32 CFG=sos3_n128 TARGET=stm32f4discovery TOOL=armgcc OPT=size
 make rebuild TEST=biquad_cascade_df2T_f32 CFG=sos3_n1 TARGET=stm32f4discovery TOOL=armgcc OPT=size
 make rebuild TEST=dct4_512_f32 CFG=default TARGET=stm32f4discovery TOOL=armgcc OPT=size
-make rebuild TEST=dct4_2048_f32 CFG=default TARGET=stm32f4discovery TOOL=armgcc OPT=speed
+make rebuild TEST=dct4_2048_f32 CFG=default TARGET=stm32f4discovery TOOL=armgcc OPT=size
 make rebuild TEST=fir_f32 CFG=taps256_n128 TARGET=stm32f4discovery TOOL=armgcc OPT=size
 make rebuild TEST=fir_f32 CFG=taps256_n1 TARGET=stm32f4discovery TOOL=armgcc OPT=size
 make rebuild TEST=rfft512_f32 CFG=default TARGET=stm32f4discovery TOOL=armgcc OPT=size
